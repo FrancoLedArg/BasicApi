@@ -8,14 +8,28 @@
     "build": "tsc --build",
     "start": "node dist/index.js",
     "dev": "nodemon src/index.ts",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:push": "drizzle-kit push --config src/config/drizzle.ts",
+    "db:studio": "drizzle-kit studio --config src/config/drizzle.ts",
+    "docker:up": "docker compose up"
+  },
+  "_moduleAliases": {
+    "@": "src"
   },
   "dependencies": {
-    "express": "^4.21.2"
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "drizzle-orm": "^0.40.0",
+    "express": "^4.21.2",
+    "module-alias": "^2.2.3",
+    "pg": "^8.14.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
+    "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
+    "@types/pg": "^8.11.11",
+    "drizzle-kit": "^0.30.5",
     "eslint": "^9.22.0",
     "eslint-config-prettier": "^10.1.1",
     "eslint-plugin-prettier": "^5.2.3",
