@@ -4,15 +4,18 @@ import cors from "cors";
 import { config } from "@/config/env";
 
 // Routes
-import productsRouter from "@/routes/products";
+import usersRouter from "@/routers/users.router";
+import productsRouter from "@/routers/products.router";
 
 const app = express();
 
 app.disable("x-powered-by"); // Disable x-powered-by header
 
+app.use(cors());
 app.use(express.json());
 
 // Routers
+app.use("/api/users", usersRouter);
 app.use("/api/products", productsRouter);
 
 app.listen(config.PORT, () => {

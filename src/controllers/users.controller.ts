@@ -1,9 +1,15 @@
 import { Request, Response } from "express";
 
 // Services
-import { findAll, findById, insert, update, remove } from "@/services/products";
+import {
+  findAll,
+  findById,
+  insert,
+  update,
+  remove,
+} from "@/services/users.service";
 
-export const getProducts = async (req: Request, res: Response) => {
+export const getUsers = async (req: Request, res: Response) => {
   try {
     const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;
     const offset = req.query.offset ? parseInt(req.query.offset as string) : 0;
@@ -15,12 +21,12 @@ export const getProducts = async (req: Request, res: Response) => {
       });
     }
 
-    const products = await findAll(limit, offset);
+    const users = await findAll(limit, offset);
 
     res.status(200).json({
       success: true,
       message: "I'm an endpoint",
-      data: products,
+      data: users,
     });
   } catch (error: unknown) {
     if (error instanceof Error) {
@@ -32,14 +38,14 @@ export const getProducts = async (req: Request, res: Response) => {
   }
 };
 
-export const getProductById = async (req: Request, res: Response) => {
+export const getUserById = async (req: Request, res: Response) => {
   try {
-    const product = await findById(req.params.id);
+    const user = await findById(req.params.id);
 
     res.status(200).json({
       success: true,
       message: "I'm another endpoint",
-      data: product,
+      data: user,
     });
   } catch (error) {
     if (error instanceof Error) {
@@ -51,14 +57,14 @@ export const getProductById = async (req: Request, res: Response) => {
   }
 };
 
-export const createProduct = async (req: Request, res: Response) => {
+export const createUser = async (req: Request, res: Response) => {
   try {
-    const newProduct = await insert(req.body);
+    const newUser = await insert(req.body);
 
     res.status(200).json({
       success: true,
       message: "I'm another endpoint",
-      data: newProduct,
+      data: newUser,
     });
   } catch (error) {
     if (error instanceof Error) {
@@ -70,14 +76,14 @@ export const createProduct = async (req: Request, res: Response) => {
   }
 };
 
-export const updateProduct = async (req: Request, res: Response) => {
+export const updateUser = async (req: Request, res: Response) => {
   try {
-    const updatedProduct = update(req.params.id, req.body);
+    const updatedUser = await update(req.params.id, req.body);
 
     res.status(200).json({
       success: true,
       message: "I'm another endpoint",
-      data: updatedProduct,
+      data: updatedUser,
     });
   } catch (error) {
     if (error instanceof Error) {
@@ -89,14 +95,14 @@ export const updateProduct = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteProduct = async (req: Request, res: Response) => {
+export const deleteUser = async (req: Request, res: Response) => {
   try {
-    const deletedProduct = delete req.params.id;
+    const deletedUser = await remove(req.params.id);
 
     res.status(200).json({
       success: true,
       message: "I'm another endpoint",
-      data: deletedProduct,
+      data: deletedUser,
     });
   } catch (error) {
     if (error instanceof Error) {
