@@ -8,6 +8,10 @@ import productsRouter from "@/routes/products";
 
 const app = express();
 
+app.disable("x-powered-by"); // Disable x-powered-by header
+
+app.use(express.json());
+
 // Routers
 app.use("/api/products", productsRouter);
 

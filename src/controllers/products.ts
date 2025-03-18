@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 // Services
-import { findAll } from "@/services/products";
+import { findAll, findById, insert, update, remove } from "@/services/products";
 
 export const getProducts = async (req: Request, res: Response) => {
   try {
@@ -24,7 +24,7 @@ export const getProducts = async (req: Request, res: Response) => {
     });
   } catch (error: unknown) {
     if (error instanceof Error) {
-      res.status(500).json({ success: false, message: error.message });
+      res.status(404).json({ success: false, message: error.message });
       return;
     }
 
@@ -34,18 +34,76 @@ export const getProducts = async (req: Request, res: Response) => {
 
 export const getProductById = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const product = await findById(req.params.id);
 
     res.status(200).json({
       success: true,
       message: "I'm another endpoint",
-      data: {
-        id: id,
-        name: "Sandalias",
-        price: 1200,
-      },
+      data: product,
     });
   } catch (error) {
+    if (error instanceof Error) {
+      res.status(404).json({ success: false, message: error.message });
+      return;
+    }
+
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
+export const createProduct = async (req: Request, res: Response) => {
+  try {
+    const newProduct = await insert(req.body);
+
+    res.status(200).json({
+      success: true,
+      message: "I'm another endpoint",
+      data: newProduct,
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(404).json({ success: false, message: error.message });
+      return;
+    }
+
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
+export const updateProduct = async (req: Request, res: Response) => {
+  try {
+    const updatedProduct = update(req.params.id, req.body);
+
+    res.status(200).json({
+      success: true,
+      message: "I'm another endpoint",
+      data: updatedProduct,
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(404).json({ success: false, message: error.message });
+      return;
+    }
+
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
+export const deleteProduct = async (req: Request, res: Response) => {
+  try {
+    const deletedProduct = delete req.params.id;
+
+    res.status(200).json({
+      success: true,
+      message: "I'm another endpoint",
+      data: deletedProduct,
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(404).json({ success: false, message: error.message });
+      return;
+    }
+
     res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
