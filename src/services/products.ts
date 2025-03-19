@@ -8,6 +8,9 @@ export const findAll = async (limit: number, offset: number) => {
   const products = await db.query.products.findMany({
     limit,
     offset,
+    with: {
+      categories: true,
+    },
   });
 
   if (!products) {
@@ -20,6 +23,9 @@ export const findAll = async (limit: number, offset: number) => {
 export const findById = async (id: string) => {
   const product = await db.query.products.findFirst({
     where: eq(products.id, id),
+    with: {
+      categories: true,
+    },
   });
 
   if (!product) {

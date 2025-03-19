@@ -36,19 +36,19 @@ export const products = pgTable("products", {
 });
 
 export const productRelations = relations(products, ({ many }) => ({
-  categories: many(product_categories),
+  categories: many(productCategories),
   orders: many(order_items),
 }));
 
 // Product Categories
-const product_categories = pgTable(
+export const productCategories = pgTable(
   "product_categories",
   {
     product_id: uuid("product_id")
-      .references(() => products.id)
+      .references(() => products.id, { onDelete: "cascade" })
       .notNull(),
     category_id: uuid("category_id")
-      .references(() => categories.id)
+      .references(() => categories.id, { onDelete: "cascade" })
       .notNull(),
     created_at: timestamp("created_at").defaultNow().notNull(),
     updated_at: timestamp("updated_at").defaultNow().notNull(),
@@ -59,14 +59,14 @@ const product_categories = pgTable(
 );
 
 export const productCategoryRelations = relations(
-  product_categories,
+  productCategories,
   ({ one }) => ({
     product: one(products, {
-      fields: [product_categories.product_id],
+      fields: [productCategories.product_id],
       references: [products.id],
     }),
     category: one(categories, {
-      fields: [product_categories.category_id],
+      fields: [productCategories.category_id],
       references: [categories.id],
     }),
   }),
@@ -81,8 +81,8 @@ export const categories = pgTable("categories", {
   updated_at: timestamp("updated_at").defaultNow().notNull(),
 });
 
-export const categorieRelations = relations(products, ({ many }) => ({
-  products: many(product_categories),
+export const categorieRelations = relations(categories, ({ many }) => ({
+  products: many(productCategories),
 }));
 
 // Orders
@@ -161,7 +161,7 @@ export const cartRelations = relations(carts, ({ one, many }) => ({
 export const cart_items = pgTable(
   "cart_items",
   {
-    order_id: uuid("order_id")
+    cart_id: uuid("cart_id")
       .references(() => orders.id)
       .notNull(),
     item_id: uuid("item_id")
@@ -172,14 +172,14 @@ export const cart_items = pgTable(
     updated_at: timestamp("updated_at").defaultNow().notNull(),
   },
   (t) => ({
-    pk: primaryKey({ columns: [t.order_id, t.item_id] }),
+    pk: primaryKey({ columns: [t.cart_id, t.item_id] }),
   }),
 );
 
 export const cartItemRelations = relations(cart_items, ({ one }) => ({
-  order: one(orders, {
-    fields: [cart_items.order_id],
-    references: [orders.id],
+  carts: one(carts, {
+    fields: [cart_items.cart_id],
+    references: [carts.id],
   }),
   item: one(products, {
     fields: [cart_items.item_id],
