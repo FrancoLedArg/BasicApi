@@ -37,7 +37,7 @@ export const products = pgTable("products", {
 
 export const productRelations = relations(products, ({ many }) => ({
   categories: many(productCategories),
-  orders: many(order_items),
+  orders: many(orderItems),
 }));
 
 // Product Categories
@@ -53,9 +53,7 @@ export const productCategories = pgTable(
     created_at: timestamp("created_at").defaultNow().notNull(),
     updated_at: timestamp("updated_at").defaultNow().notNull(),
   },
-  (t) => ({
-    pk: primaryKey({ columns: [t.product_id, t.category_id] }),
-  }),
+  (t) => [primaryKey({ columns: [t.product_id, t.category_id] })],
 );
 
 export const productCategoryRelations = relations(
@@ -86,13 +84,20 @@ export const categorieRelations = relations(categories, ({ many }) => ({
 }));
 
 // Orders
+export const orderStatusEnum = pgEnum("status", [
+  "pending",
+  "paid",
+  "shipped",
+  "delivered",
+]);
+
 export const orders = pgTable("orders", {
   id: uuid("id").primaryKey().defaultRandom(),
   user_id: uuid("user_id")
-    .references(() => users.id)
-    .notNull(),
-  total_ammount: integer("total_ammount").notNull(),
-  status: integer("stock").notNull().default(0),
+    .references(() => users.id, { onDelete: "set default" })
+    .notNull()
+    .default("00000000-0000-0000-0000-000000000000"),
+  status: orderStatusEnum().notNull().default("pending"),
   created_at: timestamp("created_at").defaultNow().notNull(),
   updated_at: timestamp("updated_at").defaultNow().notNull(),
 });
@@ -102,36 +107,34 @@ export const orderRelations = relations(orders, ({ one, many }) => ({
     fields: [orders.user_id],
     references: [users.id],
   }),
-  items: many(order_items),
+  items: many(orderItems),
   payment: one(payments),
 }));
 
 // Order Items
-export const order_items = pgTable(
+export const orderItems = pgTable(
   "order_items",
   {
     order_id: uuid("order_id")
-      .references(() => orders.id)
+      .references(() => orders.id, { onDelete: "cascade" })
       .notNull(),
     item_id: uuid("item_id")
-      .references(() => products.id)
+      .references(() => products.id, { onDelete: "cascade" })
       .notNull(),
-    quantity: integer("quantity").notNull(),
-    created_at: timestamp("created_at").defaultNow().notNull(),
-    updated_at: timestamp("updated_at").defaultNow().notNull(),
+    quantity: integer("quantity").notNull().default(1),
+    created_at: timestamp("created_at").notNull().defaultNow(),
+    updated_at: timestamp("updated_at").notNull().defaultNow(),
   },
-  (t) => ({
-    pk: primaryKey({ columns: [t.order_id, t.item_id] }),
-  }),
+  (t) => [primaryKey({ columns: [t.order_id, t.item_id] })],
 );
 
-export const orderItemRelations = relations(order_items, ({ one }) => ({
+export const orderItemRelations = relations(orderItems, ({ one }) => ({
   order: one(orders, {
-    fields: [order_items.order_id],
+    fields: [orderItems.order_id],
     references: [orders.id],
   }),
   item: one(products, {
-    fields: [order_items.item_id],
+    fields: [orderItems.item_id],
     references: [products.id],
   }),
 }));
@@ -171,9 +174,7 @@ export const cart_items = pgTable(
     created_at: timestamp("created_at").defaultNow().notNull(),
     updated_at: timestamp("updated_at").defaultNow().notNull(),
   },
-  (t) => ({
-    pk: primaryKey({ columns: [t.cart_id, t.item_id] }),
-  }),
+  (t) => [primaryKey({ columns: [t.cart_id, t.item_id] })],
 );
 
 export const cartItemRelations = relations(cart_items, ({ one }) => ({
