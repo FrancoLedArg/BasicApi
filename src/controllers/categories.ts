@@ -7,9 +7,9 @@ import {
   insert,
   update,
   remove,
-} from "@/services/users.service";
+} from "@/services/categories";
 
-export const getUsers = async (req: Request, res: Response) => {
+export const getCategories = async (req: Request, res: Response) => {
   try {
     const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;
     const offset = req.query.offset ? parseInt(req.query.offset as string) : 0;
@@ -21,12 +21,12 @@ export const getUsers = async (req: Request, res: Response) => {
       });
     }
 
-    const users = await findAll(limit, offset);
+    const categories = await findAll(limit, offset);
 
     res.status(200).json({
       success: true,
       message: "I'm an endpoint",
-      data: users,
+      data: categories,
     });
   } catch (error: unknown) {
     if (error instanceof Error) {
@@ -38,14 +38,14 @@ export const getUsers = async (req: Request, res: Response) => {
   }
 };
 
-export const getUserById = async (req: Request, res: Response) => {
+export const getCategoryById = async (req: Request, res: Response) => {
   try {
-    const user = await findById(req.params.id);
+    const category = await findById(req.params.id);
 
     res.status(200).json({
       success: true,
       message: "I'm another endpoint",
-      data: user,
+      data: category,
     });
   } catch (error) {
     if (error instanceof Error) {
@@ -57,14 +57,14 @@ export const getUserById = async (req: Request, res: Response) => {
   }
 };
 
-export const createUser = async (req: Request, res: Response) => {
+export const createCategory = async (req: Request, res: Response) => {
   try {
-    const newUser = await insert(req.body);
+    const newCategory = await insert(req.body);
 
     res.status(200).json({
       success: true,
       message: "I'm another endpoint",
-      data: newUser,
+      data: newCategory,
     });
   } catch (error) {
     if (error instanceof Error) {
@@ -76,14 +76,14 @@ export const createUser = async (req: Request, res: Response) => {
   }
 };
 
-export const updateUser = async (req: Request, res: Response) => {
+export const updateCategory = async (req: Request, res: Response) => {
   try {
-    const updatedUser = await update(req.params.id, req.body);
+    const updatedCategory = await update(req.params.id, req.body);
 
     res.status(200).json({
       success: true,
       message: "I'm another endpoint",
-      data: updatedUser,
+      data: updatedCategory,
     });
   } catch (error) {
     if (error instanceof Error) {
@@ -95,14 +95,14 @@ export const updateUser = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteUser = async (req: Request, res: Response) => {
+export const deleteCategory = async (req: Request, res: Response) => {
   try {
-    const deletedUser = await remove(req.params.id);
+    const deletedCategory = await remove(req.params.id);
 
     res.status(200).json({
       success: true,
       message: "I'm another endpoint",
-      data: deletedUser,
+      data: deletedCategory,
     });
   } catch (error) {
     if (error instanceof Error) {
