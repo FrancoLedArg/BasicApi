@@ -87,11 +87,8 @@ export const categorieRelations = relations(categories, ({ many }) => ({
 export const carts = pgTable("carts", {
   id: uuid("id").primaryKey().defaultRandom(),
   user_id: uuid("user_id")
-    .references(() => users.id)
+    .references(() => users.id, { onDelete: "cascade" })
     .notNull(),
-  // Items
-  total_ammount: integer("total_ammount").notNull(),
-  status: integer("stock").notNull().default(0),
   created_at: timestamp("created_at").defaultNow().notNull(),
   updated_at: timestamp("updated_at").defaultNow().notNull(),
 });
@@ -101,34 +98,34 @@ export const cartRelations = relations(carts, ({ one, many }) => ({
     fields: [carts.user_id],
     references: [users.id],
   }),
-  items: many(cart_items),
+  products: many(cartProducts),
 }));
 
 // Cart items
-export const cart_items = pgTable(
-  "cart_items",
+export const cartProducts = pgTable(
+  "cart_products",
   {
+    product_id: uuid("product_id")
+      .references(() => products.id)
+      .notNull(),
     cart_id: uuid("cart_id")
       .references(() => orders.id)
-      .notNull(),
-    item_id: uuid("item_id")
-      .references(() => products.id)
       .notNull(),
     quantity: integer("quantity").notNull(),
     created_at: timestamp("created_at").defaultNow().notNull(),
     updated_at: timestamp("updated_at").defaultNow().notNull(),
   },
-  (t) => [primaryKey({ columns: [t.cart_id, t.item_id] })],
+  (t) => [primaryKey({ columns: [t.product_id, t.cart_id] })],
 );
 
-export const cartItemRelations = relations(cart_items, ({ one }) => ({
-  carts: one(carts, {
-    fields: [cart_items.cart_id],
-    references: [carts.id],
-  }),
-  item: one(products, {
-    fields: [cart_items.item_id],
+export const cartItemRelations = relations(cartProducts, ({ one }) => ({
+  product: one(products, {
+    fields: [cartProducts.product_id],
     references: [products.id],
+  }),
+  cart: one(carts, {
+    fields: [cartProducts.cart_id],
+    references: [carts.id],
   }),
 }));
 

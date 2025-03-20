@@ -2,10 +2,10 @@ import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 
 // Schema
-import { orders, orderProducts } from "@/lib/db/schema";
+import { carts } from "@/lib/db/schema";
 
 export const findAll = async (limit: number, offset: number) => {
-  const orders = await db.query.orders.findMany({
+  const carts = await db.query.carts.findMany({
     limit,
     offset,
     with: {
@@ -13,91 +13,57 @@ export const findAll = async (limit: number, offset: number) => {
     },
   });
 
-  if (!orders) {
+  if (!carts) {
     throw new Error("Database Error");
   }
 
-  return orders;
+  return carts;
 };
 
 export const findById = async (id: string) => {
-  const order = await db.query.orders.findFirst({
-    where: eq(orders.id, id),
+  const cart = await db.query.carts.findFirst({
+    where: eq(carts.id, id),
   });
 
-  if (!order) {
+  if (!cart) {
     throw new Error("Database Error");
   }
 
-  return order;
+  return cart;
 };
 
-export const insert = async (user_id: string, products: any) => {
-  const newOrder = await db.transaction(async (tx) => {
-    // Creates a tx order
-    const [txOrder] = await tx
-      .insert(orders)
-      .values({
-        user_id,
-        status: "pending",
-      })
-      .returning();
-
-    if (!txOrder) {
-      throw new Error("Database Error");
-    }
-
-    // Asign all order products the id of the tx order
-    const productsArray = products.map(
-      (item: { product_id: string; quantity: number }) => ({
-        product_id: item.product_id,
-        order_id: txOrder.id,
-        quantity: item.quantity,
-      }),
-    );
-
-    // Inserts them into the tx order
-    const txOrderItems = await tx.insert(orderProducts).values(productsArray);
-
-    if (!txOrderItems) {
-      throw new Error("Database Error");
-    }
-
-    // Returns the order
-    return txOrder;
-  });
-
-  if (!newOrder) {
-    throw new Error("Database Error");
-  }
-
-  // Returns the new order with the products
-  return newOrder;
+export const insert = async (user_id: string) => {
+  const newCart = await db
+    .insert(carts)
+    .values({
+      user_id,
+    })
+    .returning();
 };
 
 export const update = async (id: string, data: any) => {
-  const [updatedOrder] = await db
-    .update(orders)
+  const [updatedCart] = await db
+    .update(carts)
     .set(data)
-    .where(eq(orders.id, id))
+    .where(eq(carts.id, id))
     .returning();
 
-  if (!updatedOrder) {
+  if (!updatedCart) {
     throw new Error("Database Error");
   }
 
-  return updatedOrder;
+  return updatedCart;
 };
 
 export const remove = async (id: string) => {
-  const deletedOrder = await db
-    .delete(orders)
-    .where(eq(orders.id, id))
+  const deletedCart = await db
+    .delete(carts)
+    .where(eq(carts.id, id))
     .returning();
 
-  if (!deletedOrder) {
+  if (!deletedCart) {
     throw new Error("Database Error");
   }
 
-  return deletedOrder;
+  return deletedCart;
 };
