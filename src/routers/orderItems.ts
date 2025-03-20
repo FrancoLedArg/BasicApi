@@ -2,15 +2,15 @@ import { Router } from "express";
 
 // Controllers
 import {
-  createOrderItem,
-  updateOrderItem,
-  deleteOrderItem,
-} from "@/controllers/orderItems";
+  createOrderProduct,
+  updateOrderProduct,
+  deleteOrderProduct,
+} from "@/controllers/orderProducts";
 
 const router = Router();
 
-router.post("/", createOrderItem);
-router.patch("/:id", updateOrderItem);
-router.delete("/:id", deleteOrderItem);
+router.post("/", createOrderProduct);
+router.patch("/:id", updateOrderProduct);
+router.delete("/:id", deleteOrderProduct);
 
 export default router;

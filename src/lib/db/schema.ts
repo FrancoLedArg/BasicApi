@@ -37,7 +37,7 @@ export const products = pgTable("products", {
 
 export const productRelations = relations(products, ({ many }) => ({
   categories: many(productCategories),
-  orders: many(orderItems),
+  orders: many(orderProducts),
 }));
 
 // Product Categories
@@ -81,62 +81,6 @@ export const categories = pgTable("categories", {
 
 export const categorieRelations = relations(categories, ({ many }) => ({
   products: many(productCategories),
-}));
-
-// Orders
-export const orderStatusEnum = pgEnum("status", [
-  "pending",
-  "paid",
-  "shipped",
-  "delivered",
-]);
-
-export const orders = pgTable("orders", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  user_id: uuid("user_id")
-    .references(() => users.id, { onDelete: "set default" })
-    .notNull()
-    .default("00000000-0000-0000-0000-000000000000"),
-  status: orderStatusEnum().notNull().default("pending"),
-  created_at: timestamp("created_at").defaultNow().notNull(),
-  updated_at: timestamp("updated_at").defaultNow().notNull(),
-});
-
-export const orderRelations = relations(orders, ({ one, many }) => ({
-  user: one(users, {
-    fields: [orders.user_id],
-    references: [users.id],
-  }),
-  items: many(orderItems),
-  payment: one(payments),
-}));
-
-// Order Items
-export const orderItems = pgTable(
-  "order_items",
-  {
-    order_id: uuid("order_id")
-      .references(() => orders.id, { onDelete: "cascade" })
-      .notNull(),
-    item_id: uuid("item_id")
-      .references(() => products.id, { onDelete: "cascade" })
-      .notNull(),
-    quantity: integer("quantity").notNull().default(1),
-    created_at: timestamp("created_at").notNull().defaultNow(),
-    updated_at: timestamp("updated_at").notNull().defaultNow(),
-  },
-  (t) => [primaryKey({ columns: [t.order_id, t.item_id] })],
-);
-
-export const orderItemRelations = relations(orderItems, ({ one }) => ({
-  order: one(orders, {
-    fields: [orderItems.order_id],
-    references: [orders.id],
-  }),
-  item: one(products, {
-    fields: [orderItems.item_id],
-    references: [products.id],
-  }),
 }));
 
 // Carts
@@ -185,6 +129,62 @@ export const cartItemRelations = relations(cart_items, ({ one }) => ({
   item: one(products, {
     fields: [cart_items.item_id],
     references: [products.id],
+  }),
+}));
+
+// Orders
+export const orderStatusEnum = pgEnum("status", [
+  "pending",
+  "paid",
+  "shipped",
+  "delivered",
+]);
+
+export const orders = pgTable("orders", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  user_id: uuid("user_id")
+    .references(() => users.id, { onDelete: "set default" })
+    .notNull()
+    .default("00000000-0000-0000-0000-000000000000"),
+  status: orderStatusEnum().notNull().default("pending"),
+  created_at: timestamp("created_at").defaultNow().notNull(),
+  updated_at: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const orderRelations = relations(orders, ({ one, many }) => ({
+  user: one(users, {
+    fields: [orders.user_id],
+    references: [users.id],
+  }),
+  products: many(orderProducts),
+  payment: one(payments),
+}));
+
+// Order Items
+export const orderProducts = pgTable(
+  "order_products",
+  {
+    product_id: uuid("product_id")
+      .references(() => products.id, { onDelete: "cascade" })
+      .notNull(),
+    order_id: uuid("order_id")
+      .references(() => orders.id, { onDelete: "cascade" })
+      .notNull(),
+    quantity: integer("quantity").notNull().default(1),
+    created_at: timestamp("created_at").notNull().defaultNow(),
+    updated_at: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.product_id, t.order_id] })],
+);
+
+export const orderProductRelations = relations(orderProducts, ({ one }) => ({
+  product: one(products, {
+    fields: [orderProducts.product_id],
+    references: [products.id],
+  }),
+  order: one(orders, {
+    fields: [orderProducts.order_id],
+    references: [orders.id],
   }),
 }));
 

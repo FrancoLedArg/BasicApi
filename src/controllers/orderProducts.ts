@@ -1,16 +1,16 @@
 import { Request, Response } from "express";
 
 // Services
-import { insert, update, remove } from "@/services/orderItems";
+import { insert, update, remove } from "@/services/orderProducts";
 
-export const createOrderItem = async (req: Request, res: Response) => {
+export const createOrderProduct = async (req: Request, res: Response) => {
   try {
-    const newOrder = await insert(req.body);
+    const newOrderProduct = await insert(req.body);
 
     res.status(200).json({
       success: true,
       message: "I'm another endpoint",
-      data: newOrder,
+      data: newOrderProduct,
     });
   } catch (error) {
     if (error instanceof Error) {
@@ -22,16 +22,16 @@ export const createOrderItem = async (req: Request, res: Response) => {
   }
 };
 
-export const updateOrderItem = async (req: Request, res: Response) => {
+export const updateOrderProduct = async (req: Request, res: Response) => {
   try {
     const { order_id, item_id } = req.params;
 
-    const updatedOrder = await update(order_id, item_id, req.body);
+    const updatedOrderProduct = await update(order_id, item_id, req.body);
 
     res.status(200).json({
       success: true,
       message: "I'm another endpoint",
-      data: updatedOrder,
+      data: updatedOrderProduct,
     });
   } catch (error) {
     if (error instanceof Error) {
@@ -43,16 +43,16 @@ export const updateOrderItem = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteOrderItem = async (req: Request, res: Response) => {
+export const deleteOrderProduct = async (req: Request, res: Response) => {
   try {
     const { order_id, item_id } = req.params;
 
-    const deletedOrder = await remove(order_id, item_id);
+    const deletedOrderProduct = await remove(order_id, item_id);
 
     res.status(200).json({
       success: true,
       message: "I'm another endpoint",
-      data: deletedOrder,
+      data: deletedOrderProduct,
     });
   } catch (error) {
     if (error instanceof Error) {

@@ -2,48 +2,48 @@ import { eq, and } from "drizzle-orm";
 import { db } from "@/lib/db";
 
 // Schema
-import { products, orders, orderItems } from "@/lib/db/schema";
+import { products, orders, orderProducts } from "@/lib/db/schema";
 
 export const insert = async (data: any) => {
-  const { order_id, item_id, quantity } = data;
+  const { product_id, order_id, quantity } = data;
 
-  const [newItem] = await db
-    .insert(orderItems)
+  const [newOrderProduct] = await db
+    .insert(orderProducts)
     .values({
+      product_id,
       order_id,
-      item_id,
       quantity,
     })
     .returning();
 
-  if (!newItem) {
+  if (!newOrderProduct) {
     throw new Error("Database Error");
   }
 };
 
 export const update = async (order_id: string, item_id: string, data: any) => {
-  const [updatedItem] = await db
-    .update(orderItems)
+  const [updatedOrderProduct] = await db
+    .update(orderProducts)
     .set(data)
     .where(and(eq(orders.id, order_id), eq(products.id, item_id)))
     .returning();
 
-  if (!updatedItem) {
+  if (!updatedOrderProduct) {
     throw new Error("Database Error");
   }
 
-  return updatedItem;
+  return updatedOrderProduct;
 };
 
 export const remove = async (order_id: string, item_id: string) => {
-  const deletedItem = await db
-    .delete(orderItems)
+  const deletedOrderProduct = await db
+    .delete(orderProducts)
     .where(and(eq(orders.id, order_id), eq(products.id, item_id)))
     .returning();
 
-  if (!deletedItem) {
+  if (!deletedOrderProduct) {
     throw new Error("Database Error");
   }
 
-  return deletedItem;
+  return deletedOrderProduct;
 };

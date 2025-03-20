@@ -9,7 +9,7 @@ import productsRouter from "@/routers/products";
 import productCategoriesRouter from "@/routers/productCategories";
 import categoriesRouter from "@/routers/categories";
 import ordersRouter from "@/routers/orders";
-import orderItemsRouter from "@/routers/orderItems";
+import orderProductsRouter from "@/routers/orderItems";
 
 const app = express();
 
@@ -24,7 +24,7 @@ app.use("/api/products", productsRouter);
 app.use("/api/productCategories", productCategoriesRouter);
 app.use("/api/categories", categoriesRouter);
 app.use("/api/orders", ordersRouter);
-app.use("/api/orderItems", orderItemsRouter);
+app.use("/api/orderProducts", orderProductsRouter);
 
 app.listen(config.PORT, () => {
   console.log(`Running on Port ${config.PORT}`);
