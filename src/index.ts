@@ -12,6 +12,7 @@ import cartsRouter from "@/routers/carts";
 import cartProductsRouter from "@/routers/cartProducts";
 import ordersRouter from "@/routers/orders";
 import orderProductsRouter from "@/routers/orderProducts";
+import paymentsRouter from "@/routers/payments";
 
 const app = express();
 

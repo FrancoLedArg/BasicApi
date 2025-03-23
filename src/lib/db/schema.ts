@@ -186,6 +186,19 @@ export const orderProductRelations = relations(orderProducts, ({ one }) => ({
 }));
 
 // Payments
+export const paymentMethodsEnum = pgEnum("payment_method", [
+  "debit",
+  "credit",
+  "wallet",
+  "crypto",
+]);
+
+export const paymentStatusEnum = pgEnum("payment_method", [
+  "pending",
+  "successfull",
+  "denied",
+]);
+
 export const payments = pgTable("payments", {
   id: uuid("id").primaryKey().defaultRandom(),
   user_id: uuid("user_id")
@@ -194,10 +207,10 @@ export const payments = pgTable("payments", {
   order_id: uuid("order_id")
     .references(() => orders.id)
     .notNull(),
-  payment_method: integer("payment_method").notNull(),
-  payment_status: integer("payment_status").notNull(),
-  transaction_id: integer("stock").notNull().default(0),
+  payment_method: paymentMethodsEnum().notNull(),
+  payment_status: paymentStatusEnum().notNull(),
   created_at: timestamp("created_at").defaultNow().notNull(),
+  updated_at: timestamp("updated_at").notNull().defaultNow(),
 });
 
 export const paymentRelations = relations(payments, ({ one }) => ({
