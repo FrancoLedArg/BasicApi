@@ -30,6 +30,7 @@ app.use("/api/carts", cartsRouter);
 app.use("/api/cartProducts", cartProductsRouter);
 app.use("/api/orders", ordersRouter);
 app.use("/api/orderProducts", orderProductsRouter);
+app.use("/api/payments", paymentsRouter);
 
 app.listen(config.PORT, () => {
   console.log(`Running on Port ${config.PORT}`);
