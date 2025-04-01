@@ -4,7 +4,17 @@ import { db } from "@/lib/db";
 // Schema
 import { users } from "@/lib/db/schema";
 
-export const findAll = async (limit: number, offset: number) => {
+// Validation Types
+import {
+  GetUserDTO,
+  CreateUserDTO,
+  UpdateUserDTO,
+  UserFilterDTO,
+} from "@/lib/validation/users";
+
+export const findAll = async (query: UserFilterDTO) => {
+  const { limit, offset } = query;
+
   const users = await db.query.users.findMany({
     limit,
     offset,
@@ -29,8 +39,8 @@ export const findById = async (id: string) => {
   return user;
 };
 
-export const insert = async (data: any) => {
-  const { email, password } = data;
+export const insert = async (body: CreateUserDTO) => {
+  const { email, password } = body;
 
   const [newUser] = await db
     .insert(users)
@@ -45,10 +55,15 @@ export const insert = async (data: any) => {
   }
 };
 
-export const update = async (id: string, data: any) => {
+export const update = async (id: string, body: UpdateUserDTO) => {
+  const { email, password } = body;
+
   const [updatedUser] = await db
     .update(users)
-    .set(data)
+    .set({
+      email,
+      password,
+    })
     .where(eq(users.id, id))
     .returning();
 

@@ -9,6 +9,7 @@ import {
   getUserSchema,
   createUserSchema,
   updateUserSchema,
+  userFilterSchema,
 } from "@/lib/validation/users";
 
 // Controllers
@@ -22,14 +23,43 @@ import {
 
 const router = Router();
 
-router.get("/", getUsers);
+router.get(
+  "/",
+  validateSchema(z.object({ query: userFilterSchema })),
+
+  // I need to find a way for this query validation system not to break typescript...
+
+  // @ts-ignore
+  getUsers,
+);
+
 router.get(
   "/:id",
   validateSchema(z.object({ params: getUserSchema })),
   getUserById,
 );
-router.post("/", createUser);
-router.patch("/:id", updateUser);
-router.delete("/:id", deleteUser);
+
+router.post(
+  "/",
+  validateSchema(z.object({ body: createUserSchema })),
+  createUser,
+);
+
+router.patch(
+  "/:id",
+  validateSchema(
+    z.object({
+      params: getUserSchema,
+      body: updateUserSchema,
+    }),
+  ),
+  updateUser,
+);
+
+router.delete(
+  "/:id",
+  validateSchema(z.object({ params: getUserSchema })),
+  deleteUser,
+);
 
 export default router;

@@ -1,21 +1,17 @@
 import { Request, Response } from "express";
 
+// Validation Types
+import { UserFilterDTO } from "@/lib/validation/users";
+
 // Services
 import { findAll, findById, insert, update, remove } from "@/services/users";
 
-export const getUsers = async (req: Request, res: Response) => {
+export const getUsers = async (
+  req: Request<unknown, unknown, unknown, UserFilterDTO>,
+  res: Response,
+) => {
   try {
-    const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;
-    const offset = req.query.offset ? parseInt(req.query.offset as string) : 0;
-
-    if (isNaN(limit) || isNaN(offset) || limit < 1 || offset < 0) {
-      res.status(400).json({
-        success: false,
-        message: "Invalid limit or offset",
-      });
-    }
-
-    const users = await findAll(limit, offset);
+    const users = await findAll(req.query);
 
     res.status(200).json({
       success: true,
@@ -34,7 +30,9 @@ export const getUsers = async (req: Request, res: Response) => {
 
 export const getUserById = async (req: Request, res: Response) => {
   try {
-    const user = await findById(req.params.id);
+    const { id } = req.params;
+
+    const user = await findById(id);
 
     res.status(200).json({
       success: true,
@@ -72,7 +70,9 @@ export const createUser = async (req: Request, res: Response) => {
 
 export const updateUser = async (req: Request, res: Response) => {
   try {
-    const updatedUser = await update(req.params.id, req.body);
+    const { id } = req.params;
+
+    const updatedUser = await update(id, req.body);
 
     res.status(200).json({
       success: true,
@@ -91,7 +91,9 @@ export const updateUser = async (req: Request, res: Response) => {
 
 export const deleteUser = async (req: Request, res: Response) => {
   try {
-    const deletedUser = await remove(req.params.id);
+    const { id } = req.params;
+
+    const deletedUser = await remove(id);
 
     res.status(200).json({
       success: true,

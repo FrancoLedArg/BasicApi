@@ -1,5 +1,22 @@
 import { z } from "zod";
 
+export const userFilterSchema = z
+  .object({
+    limit: z
+      .string()
+      .default("0")
+      .refine((val) => !isNaN(Number(val)), { message: "Invalid limit value" })
+      .transform((val) => Number(val))
+      .pipe(z.number().int().nonnegative()),
+    offset: z
+      .string()
+      .default("10")
+      .refine((val) => !isNaN(Number(val)), { message: "Invalid offset value" })
+      .transform((val) => Number(val))
+      .pipe(z.number().int().nonnegative()),
+  })
+  .strict();
+
 export const userSchema = z.object({
   id: z.string().uuid("Invalid ID"),
   email: z.string().email("Invalid email").max(255),
@@ -28,6 +45,7 @@ export const createUserSchema = userSchema.omit({
 
 export const updateUserSchema = createUserSchema.partial();
 
+export type UserFilterDTO = z.infer<typeof userFilterSchema>;
 export type GetUserDTO = z.infer<typeof getUserSchema>;
 export type CreateUserDTO = z.infer<typeof createUserSchema>;
 export type UpdateUserDTO = z.infer<typeof updateUserSchema>;
