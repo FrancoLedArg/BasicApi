@@ -51,8 +51,6 @@ export const productCategories = pgTable(
     category_id: uuid("category_id")
       .references(() => categories.id, { onDelete: "cascade" })
       .notNull(),
-    created_at: timestamp("created_at").defaultNow().notNull(),
-    updated_at: timestamp("updated_at").defaultNow().notNull(),
   },
   (t) => [primaryKey({ columns: [t.product_id, t.category_id] })],
 );

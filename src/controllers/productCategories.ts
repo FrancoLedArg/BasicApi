@@ -5,12 +5,14 @@ import { insert, remove } from "@/services/productCategories";
 
 export const createProductCategory = async (req: Request, res: Response) => {
   try {
-    const newUser = await insert(req.body);
+    const { product_id, category_id } = req.body;
+
+    const newProductCategory = await insert(product_id, category_id);
 
     res.status(200).json({
       success: true,
       message: "I'm another endpoint",
-      data: newUser,
+      data: newProductCategory,
     });
   } catch (error) {
     if (error instanceof Error) {
