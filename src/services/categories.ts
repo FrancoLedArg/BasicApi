@@ -4,6 +4,13 @@ import { db } from "@/lib/db";
 // Schema
 import { categories } from "@/lib/db/schema";
 
+// Validation Types
+import {
+  GetCategoryDTO,
+  CreateCategoryDTO,
+  UpdateCategoryDTO,
+} from "@/lib/validation/categories";
+
 export const findAll = async (limit: number, offset: number) => {
   const categories = await db.query.categories.findMany({
     limit,
@@ -29,13 +36,13 @@ export const findById = async (id: string) => {
   });
 
   if (!category) {
-    throw new Error("Database Error");
+    throw new Error("Category not found.");
   }
 
   return category;
 };
 
-export const insert = async (data: any) => {
+export const insert = async (data: CreateCategoryDTO) => {
   const { name, description } = data;
 
   const [newCategory] = await db
@@ -51,11 +58,19 @@ export const insert = async (data: any) => {
   }
 };
 
-export const update = async (id: string, data: any) => {
+export const update = async (id: string, data: UpdateCategoryDTO) => {
+  const { name, description } = data;
+
+  const category = await findById(id);
+
   const [updatedCategory] = await db
     .update(categories)
-    .set(data)
-    .where(eq(categories.id, id))
+    .set({
+      name,
+      description,
+      updated_at: new Date(),
+    })
+    .where(eq(categories.id, category.id))
     .returning();
 
   if (!updatedCategory) {
@@ -66,9 +81,11 @@ export const update = async (id: string, data: any) => {
 };
 
 export const remove = async (id: string) => {
+  const category = await findById(id);
+
   const deletedCategory = await db
     .delete(categories)
-    .where(eq(categories.id, id))
+    .where(eq(categories.id, category.id))
     .returning();
 
   if (!deletedCategory) {

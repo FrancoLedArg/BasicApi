@@ -1,4 +1,15 @@
 import { Router } from "express";
+import { z } from "zod";
+
+// Middlewares
+import { validateSchema } from "@/middlewares/validatieSchema";
+
+// Validation Schemas
+import {
+  getCategorySchema,
+  createCategorySchema,
+  updateCategorySchema,
+} from "@/lib/validation/categories";
 
 // Controllers
 import {
@@ -12,9 +23,34 @@ import {
 const router = Router();
 
 router.get("/", getCategories);
-router.get("/:id", getCategoryById);
-router.post("/", createCategory);
-router.patch("/:id", updateCategory);
-router.delete("/:id", deleteCategory);
+
+router.get(
+  "/:id",
+  validateSchema(z.object({ params: getCategorySchema })),
+  getCategoryById,
+);
+
+router.post(
+  "/",
+  validateSchema(z.object({ body: createCategorySchema })),
+  createCategory,
+);
+
+router.patch(
+  "/:id",
+  validateSchema(
+    z.object({
+      params: getCategorySchema,
+      body: updateCategorySchema,
+    }),
+  ),
+  updateCategory,
+);
+
+router.delete(
+  "/:id",
+  validateSchema(z.object({ params: getCategorySchema })),
+  deleteCategory,
+);
 
 export default router;

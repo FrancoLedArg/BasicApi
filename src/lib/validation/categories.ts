@@ -2,8 +2,16 @@ import { z } from "zod";
 
 export const categorySchema = z.object({
   id: z.string().uuid("Invalid ID"),
-  name: z.string().min(1).max(255),
-  description: z.string().min(1).max(255),
+  name: z
+    .string()
+    .min(1, "Name is required")
+    .max(255, "Name too long")
+    .regex(/^[a-zA-Z0-9\s\-]+$/, "Invalid characters in name"),
+  description: z
+    .string()
+    .min(1, "Description is required")
+    .max(255, "Description too long")
+    .regex(/^[a-zA-Z0-9\s.,!?()-]+$/, "Invalid characters in description"),
   created_at: z.string().datetime(),
   updated_at: z.string().datetime(),
 });
