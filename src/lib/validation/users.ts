@@ -31,8 +31,8 @@ export const userSchema = z.object({
     .refine((val) => /[0-9]/.test(val), {
       message: "Password must contain at least one number.",
     }),
-  created_at: z.date(),
-  updated_at: z.date(),
+  created_at: z.date().default(() => new Date()),
+  updated_at: z.date().default(() => new Date()),
 });
 
 export const getUserSchema = userSchema.pick({ id: true });

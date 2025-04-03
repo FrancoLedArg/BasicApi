@@ -4,6 +4,9 @@ import { db } from "@/lib/db";
 // Schema
 import { products } from "@/lib/db/schema";
 
+// Validation Types
+import { CreateProductDTO, UpdateProductDTO } from "@/lib/validation/products";
+
 export const findAll = async (limit: number, offset: number) => {
   const products = await db.query.products.findMany({
     limit,
@@ -29,13 +32,13 @@ export const findById = async (id: string) => {
   });
 
   if (!product) {
-    throw new Error("Database Error");
+    throw new Error("Product not found.");
   }
 
   return product;
 };
 
-export const insert = async (data: any) => {
+export const insert = async (data: CreateProductDTO) => {
   const { name, description, price } = data;
 
   const [newProduct] = await db
@@ -52,10 +55,18 @@ export const insert = async (data: any) => {
   }
 };
 
-export const update = async (id: string, data: any) => {
+export const update = async (id: string, data: UpdateProductDTO) => {
+  const { name, description, price } = data;
+
+  const product = await findById(id);
+
   const [updatedProduct] = await db
     .update(products)
-    .set(data)
+    .set({
+      name,
+      description,
+      price,
+    })
     .where(eq(products.id, id))
     .returning();
 

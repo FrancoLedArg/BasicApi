@@ -1,19 +1,17 @@
 import { Request, Response } from "express";
 
+// Validation Types
+import { ProductFilterDTO } from "@/lib/validation/products";
+
 // Services
 import { findAll, findById, insert, update, remove } from "@/services/products";
 
-export const getProducts = async (req: Request, res: Response) => {
+export const getProducts = async (
+  req: Request<unknown, unknown, unknown, ProductFilterDTO>,
+  res: Response,
+) => {
   try {
-    const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;
-    const offset = req.query.offset ? parseInt(req.query.offset as string) : 0;
-
-    if (isNaN(limit) || isNaN(offset) || limit < 1 || offset < 0) {
-      res.status(400).json({
-        success: false,
-        message: "Invalid limit or offset",
-      });
-    }
+    const { limit, offset } = req.query;
 
     const products = await findAll(limit, offset);
 

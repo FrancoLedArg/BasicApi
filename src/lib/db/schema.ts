@@ -4,6 +4,7 @@ import {
   pgTable,
   varchar,
   integer,
+  numeric,
   timestamp,
   uuid,
   primaryKey,

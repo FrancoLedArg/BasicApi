@@ -2,10 +2,10 @@ import { z } from "zod";
 
 export const categorySchema = z.object({
   id: z.string().uuid("Invalid ID"),
-  name: z.string().email("Invalid email").max(255),
-  description: z.string().min(8).max(255),
-  created_at: z.date().default(() => new Date()),
-  updated_at: z.date().default(() => new Date()),
+  name: z.string().min(1).max(255),
+  description: z.string().min(1).max(255),
+  created_at: z.string().datetime(),
+  updated_at: z.string().datetime(),
 });
 
 export const getCategorySchema = categorySchema.pick({ id: true });
@@ -18,6 +18,6 @@ export const createCategorySchema = categorySchema.omit({
 
 export const updateCategorySchema = createCategorySchema.partial();
 
-export type GetUserDTO = z.infer<typeof getCategorySchema>;
-export type CreateUserDTO = z.infer<typeof createCategorySchema>;
-export type UpdateUserDTO = z.infer<typeof updateCategorySchema>;
+export type GetCategoryDTO = z.infer<typeof getCategorySchema>;
+export type CreateCategoryDTO = z.infer<typeof createCategorySchema>;
+export type UpdateCategoryDTO = z.infer<typeof updateCategorySchema>;

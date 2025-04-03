@@ -6,10 +6,9 @@ import { users } from "@/lib/db/schema";
 
 // Validation Types
 import {
-  GetUserDTO,
+  UserFilterDTO,
   CreateUserDTO,
   UpdateUserDTO,
-  UserFilterDTO,
 } from "@/lib/validation/users";
 
 export const findAll = async (query: UserFilterDTO) => {
