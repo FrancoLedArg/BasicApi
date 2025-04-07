@@ -4,9 +4,11 @@ import { db } from "@/lib/db";
 // Schema
 import { products, carts, cartProducts } from "@/lib/db/schema";
 
-export const insert = async (data: any) => {
-  const { product_id, cart_id, quantity } = data;
-
+export const insert = async (
+  product_id: string,
+  cart_id: string,
+  quantity: number,
+) => {
   const [newCartProduct] = await db
     .insert(cartProducts)
     .values({

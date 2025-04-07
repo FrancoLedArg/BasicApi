@@ -17,6 +17,9 @@ export const findAll = async (query: UserFilterDTO) => {
   const users = await db.query.users.findMany({
     limit,
     offset,
+    with: {
+      cart: true,
+    },
   });
 
   if (!users) {

@@ -5,7 +5,9 @@ import { insert, update, remove } from "@/services/cartProducts";
 
 export const createCartProduct = async (req: Request, res: Response) => {
   try {
-    const newCartProduct = await insert(req.body);
+    const { product_id, cart_id, quantity } = req.body;
+
+    const newCartProduct = await insert(product_id, cart_id, quantity);
 
     res.status(200).json({
       success: true,

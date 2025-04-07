@@ -57,6 +57,25 @@ export const getCategoryById = async (req: Request, res: Response) => {
   }
 };
 
+export const getCategoryProducts = async (req: Request, res: Response) => {
+  try {
+    const products = await findById(req.params.id);
+
+    res.status(200).json({
+      success: true,
+      message: "I'm another endpoint",
+      data: products,
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(404).json({ success: false, message: error.message });
+      return;
+    }
+
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
 export const createCategory = async (req: Request, res: Response) => {
   try {
     const newCategory = await insert(req.body);

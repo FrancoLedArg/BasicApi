@@ -30,6 +30,18 @@ export const findAll = async (limit: number, offset: number) => {
 export const findById = async (id: string) => {
   const category = await db.query.categories.findFirst({
     where: eq(categories.id, id),
+  });
+
+  if (!category) {
+    throw new Error("Category not found.");
+  }
+
+  return category;
+};
+
+export const findProducts = async (id: string) => {
+  const category = await db.query.categories.findFirst({
+    where: eq(categories.id, id),
     with: {
       products: true,
     },
@@ -39,7 +51,7 @@ export const findById = async (id: string) => {
     throw new Error("Category not found.");
   }
 
-  return category;
+  return category.products;
 };
 
 export const insert = async (data: CreateCategoryDTO) => {

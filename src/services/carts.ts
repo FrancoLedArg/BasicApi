@@ -26,7 +26,7 @@ export const findById = async (id: string) => {
   });
 
   if (!cart) {
-    throw new Error("Database Error");
+    throw new Error("Cart not found.");
   }
 
   return cart;
@@ -39,6 +39,12 @@ export const insert = async (user_id: string) => {
       user_id,
     })
     .returning();
+
+  if (!newCart) {
+    throw new Error("Database Error");
+  }
+
+  return newCart;
 };
 
 export const update = async (id: string, data: any) => {

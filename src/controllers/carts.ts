@@ -53,7 +53,7 @@ export const getCartById = async (req: Request, res: Response) => {
 
 export const createCart = async (req: Request, res: Response) => {
   try {
-    const { user_id, products } = req.body;
+    const { user_id } = req.body;
 
     const newCart = await insert(user_id);
 
@@ -61,25 +61,6 @@ export const createCart = async (req: Request, res: Response) => {
       success: true,
       message: "I'm another endpoint",
       data: newCart,
-    });
-  } catch (error) {
-    if (error instanceof Error) {
-      res.status(404).json({ success: false, message: error.message });
-      return;
-    }
-
-    res.status(500).json({ success: false, message: "Internal server error" });
-  }
-};
-
-export const updateCart = async (req: Request, res: Response) => {
-  try {
-    const updatedCart = await update(req.params.id, req.body);
-
-    res.status(200).json({
-      success: true,
-      message: "I'm another endpoint",
-      data: updatedCart,
     });
   } catch (error) {
     if (error instanceof Error) {

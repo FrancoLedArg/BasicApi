@@ -30,6 +30,12 @@ router.get(
   getCategoryById,
 );
 
+router.get(
+  "/:id/products",
+  validateSchema(z.object({ params: getCategorySchema })),
+  getCategoryById,
+);
+
 router.post(
   "/",
   validateSchema(z.object({ body: createCategorySchema })),

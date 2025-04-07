@@ -1,18 +1,18 @@
 import { z } from "zod";
 
-export const productSchema = z.object({
+export const cartSchema = z.object({
   id: z.string().uuid("Invalid ID"),
   user_id: z.string().uuid("Invalid ID"),
-  created_at: z.date().default(() => new Date()),
-  updated_at: z.date().default(() => new Date()),
+  created_at: z.string().datetime(),
+  updated_at: z.string().datetime(),
 });
 
-export const getProductSchema = productSchema.pick({ id: true });
+export const getCartSchema = cartSchema.pick({ id: true });
 
-export const createProductSchema = productSchema.pick({ user_id: true });
+export const createCartSchema = cartSchema.pick({ user_id: true });
 
-export const updateProductSchema = createProductSchema.partial();
+export const updateCartSchema = createCartSchema.partial();
 
-export type GetUserDTO = z.infer<typeof getProductSchema>;
-export type CreateUserDTO = z.infer<typeof createProductSchema>;
-export type UpdateUserDTO = z.infer<typeof updateProductSchema>;
+export type GetCartDTO = z.infer<typeof getCartSchema>;
+export type CreateCartDTO = z.infer<typeof createCartSchema>;
+export type UpdateCartDTO = z.infer<typeof updateCartSchema>;

@@ -1,18 +1,29 @@
 import { z } from "zod";
 
-export const productSchema = z.object({
-  id: z.string().uuid("Invalid ID"),
-  user_id: z.string().uuid("Invalid ID"),
-  created_at: z.date().default(() => new Date()),
-  updated_at: z.date().default(() => new Date()),
+export const cartProductSchema = z.object({
+  product_id: z.string().uuid("Invalid ID"),
+  cart_id: z.string().uuid("Invalid ID"),
+  quantity: z.number().int().nonnegative(),
+  created_at: z.string().datetime(),
+  updated_at: z.string().datetime(),
 });
 
-export const getProductSchema = productSchema.pick({ id: true });
+export const getCartProductSchema = cartProductSchema.pick({
+  product_id: true,
+  cart_id: true,
+});
 
-export const createProductSchema = productSchema.pick({ user_id: true });
+export const createCartProductSchema = cartProductSchema
+  .pick({
+    product_id: true,
+    cart_id: true,
+    quantity: true,
+  })
+  .partial({
+    quantity: true,
+  });
 
-export const updateProductSchema = createProductSchema.partial();
+export const updateCartProductSchema = createCartProductSchema.partial();
 
-export type GetUserDTO = z.infer<typeof getProductSchema>;
-export type CreateUserDTO = z.infer<typeof createProductSchema>;
-export type UpdateUserDTO = z.infer<typeof updateProductSchema>;
+export type CreateUserDTO = z.infer<typeof createCartProductSchema>;
+export type UpdateUserDTO = z.infer<typeof updateCartProductSchema>;

@@ -20,7 +20,11 @@ export const users = pgTable("users", {
   updated_at: timestamp("updated_at").defaultNow().notNull(),
 });
 
-export const userRelations = relations(users, ({ many }) => ({
+export const userRelations = relations(users, ({ one, many }) => ({
+  cart: one(carts, {
+    fields: [users.id],
+    references: [carts.user_id],
+  }),
   orders: many(orders),
   payments: many(payments),
 }));
@@ -30,8 +34,8 @@ export const products = pgTable("products", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: varchar("name", { length: 255 }).notNull().unique(),
   description: varchar("description", { length: 255 }).notNull(),
-  price: varchar("price", { length: 255 }).notNull(),
-  stock: integer("stock").notNull().default(0),
+  price: numeric("price", { precision: 10, scale: 2 }).notNull(),
+  stock: integer("stock").default(0).notNull(),
   created_at: timestamp("created_at").defaultNow().notNull(),
   updated_at: timestamp("updated_at").defaultNow().notNull(),
 });
@@ -78,7 +82,7 @@ export const categories = pgTable("categories", {
   updated_at: timestamp("updated_at").defaultNow().notNull(),
 });
 
-export const categorieRelations = relations(categories, ({ many }) => ({
+export const categoryRelations = relations(categories, ({ many }) => ({
   products: many(productCategories),
 }));
 
@@ -87,7 +91,8 @@ export const carts = pgTable("carts", {
   id: uuid("id").primaryKey().defaultRandom(),
   user_id: uuid("user_id")
     .references(() => users.id, { onDelete: "cascade" })
-    .notNull(),
+    .notNull()
+    .unique(),
   created_at: timestamp("created_at").defaultNow().notNull(),
   updated_at: timestamp("updated_at").defaultNow().notNull(),
 });
@@ -108,7 +113,7 @@ export const cartProducts = pgTable(
       .references(() => products.id)
       .notNull(),
     cart_id: uuid("cart_id")
-      .references(() => orders.id)
+      .references(() => carts.id)
       .notNull(),
     quantity: integer("quantity").notNull(),
     created_at: timestamp("created_at").defaultNow().notNull(),
@@ -192,7 +197,7 @@ export const paymentMethodsEnum = pgEnum("payment_method", [
   "crypto",
 ]);
 
-export const paymentStatusEnum = pgEnum("payment_method", [
+export const paymentStatusEnum = pgEnum("payment_status", [
   "pending",
   "successfull",
   "denied",
