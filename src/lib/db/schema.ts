@@ -5,6 +5,7 @@ import {
   varchar,
   integer,
   numeric,
+  decimal,
   timestamp,
   uuid,
   primaryKey,
@@ -93,6 +94,7 @@ export const carts = pgTable("carts", {
     .references(() => users.id, { onDelete: "cascade" })
     .notNull()
     .unique(),
+  total: decimal("total").notNull(),
   created_at: timestamp("created_at").defaultNow().notNull(),
   updated_at: timestamp("updated_at").defaultNow().notNull(),
 });
@@ -147,6 +149,7 @@ export const orders = pgTable("orders", {
     .references(() => users.id, { onDelete: "set default" })
     .notNull()
     .default("00000000-0000-0000-0000-000000000000"),
+  total: decimal("total").notNull(),
   status: orderStatusEnum().notNull().default("pending"),
   created_at: timestamp("created_at").defaultNow().notNull(),
   updated_at: timestamp("updated_at").defaultNow().notNull(),

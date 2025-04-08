@@ -35,8 +35,26 @@ router.post(
   createCart,
 );
 
+router.post(
+  "/:id/products",
+  validateSchema(z.object({ body: createCartSchema })),
+  createCart,
+);
+
+router.patch(
+  ":cart_id/products/:product_id",
+  validateSchema(z.object({ params: getCartSchema, body: createCartSchema })),
+  createCart,
+);
+
 router.delete(
-  "/:id",
+  "/:cart_id/products/:product_id",
+  validateSchema(z.object({ params: getCartSchema, body: createCartSchema })),
+  createCart,
+);
+
+router.delete(
+  "/:id/products",
   validateSchema(z.object({ params: getCartSchema })),
   deleteCart,
 );

@@ -53,7 +53,7 @@ export const getOrderById = async (req: Request, res: Response) => {
 
 export const createOrder = async (req: Request, res: Response) => {
   try {
-    const { user_id, products } = req.body;
+    const { user_id, total, products } = req.body;
 
     const newOrder = await insert(user_id, products);
 
