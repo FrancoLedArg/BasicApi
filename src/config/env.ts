@@ -7,6 +7,7 @@ dotenv.config();
 
 export const config = {
   NODE_ENV: process.env.NODE_ENV,
+  API_KEY: process.env.API_KEY,
   PORT: process.env.PORT,
   DB_URL: `postgresql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,
 };

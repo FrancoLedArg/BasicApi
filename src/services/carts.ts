@@ -32,11 +32,14 @@ export const findById = async (id: string) => {
   return cart;
 };
 
-export const insert = async (user_id: string) => {
+export const insert = async (data: any) => {
+  const { user_id, total } = data;
+
   const newCart = await db
     .insert(carts)
     .values({
       user_id,
+      total,
     })
     .returning();
 

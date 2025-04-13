@@ -39,6 +39,7 @@ export const insert = async (user_id: string, products: any) => {
       .insert(orders)
       .values({
         user_id,
+        total: "0",
         status: "pending",
       })
       .returning();

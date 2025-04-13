@@ -11,15 +11,15 @@ import {
   UpdateUserDTO,
 } from "@/lib/validation/users";
 
+// Utils
+import { hashPassword } from "@/utils/hashPassword";
+
 export const findAll = async (query: UserFilterDTO) => {
   const { limit, offset } = query;
 
   const users = await db.query.users.findMany({
     limit,
     offset,
-    with: {
-      cart: true,
-    },
   });
 
   if (!users) {
@@ -35,7 +35,7 @@ export const findById = async (id: string) => {
   });
 
   if (!user) {
-    throw new Error("Database Error");
+    throw new Error("User not found");
   }
 
   return user;
@@ -44,17 +44,26 @@ export const findById = async (id: string) => {
 export const insert = async (body: CreateUserDTO) => {
   const { email, password } = body;
 
+  const hash = await hashPassword(password);
+
   const [newUser] = await db
     .insert(users)
     .values({
       email,
-      password,
+      password: hash,
     })
     .returning();
 
   if (!newUser) {
     throw new Error("Database Error");
   }
+
+  // I need to figure out a better way to remove the password from here so i can return this safely
+
+  // @ts-ignore
+  delete newUser.password;
+
+  return newUser;
 };
 
 export const update = async (id: string, body: UpdateUserDTO) => {
