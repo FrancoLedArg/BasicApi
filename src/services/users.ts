@@ -41,6 +41,14 @@ export const findById = async (id: string) => {
   return user;
 };
 
+export const findByEmail = async (email: string) => {
+  const user = await db.query.users.findFirst({
+    where: eq(users.email, email),
+  });
+
+  return user;
+};
+
 export const insert = async (body: CreateUserDTO) => {
   const { email, password } = body;
 

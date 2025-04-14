@@ -25,3 +25,31 @@ Admins use the API to manage products, orders, and users. Their primary objectiv
 - Inventory Management: Track stock levels and prevent overselling.
 
 -- More details about the project
+
+import dotenv from "dotenv";
+import { z } from "zod";
+
+dotenv.config();
+
+const envSchema = z.object({
+NODE_ENV: z.enum(["development", "production"]),
+API_KEY: z.string(),
+PORT: z.string(),
+DB_USER: z.string(),
+DB_PASSWORD: z.string(),
+DB_HOST: z.string(),
+DB_PORT: z.string(),
+DB_NAME: z.string(),
+JWT_ACCESS_SECRET: z.string(),
+JWT_REFRESH_SECRET: z.string(),
+});
+
+const parsedEnv = envSchema.parse(process.env);
+
+if (!parsedEnv) {
+throw new Error("Invalid ENV variables");
+}
+
+export const config = parsedEnv;
+
+`postgresql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,

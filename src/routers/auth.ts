@@ -1,8 +1,9 @@
 import { Router } from "express";
 import passport from "passport";
 
-/*
 // Middlewares
+import { authHandler } from "@/middlewares/authHandler";
+/*
 import { validateSchema } from "@/middlewares/validatieSchema";
 
 // Validation Schemas
@@ -15,23 +16,16 @@ import {
  */
 
 // Controllers
-import {
-  getUsers,
-  getUserById,
-  createUser,
-  updateUser,
-  deleteUser,
-} from "@/controllers/users";
+import { signup, signin } from "@/controllers/auth";
 
 const router = Router();
 
-router.post(
-  "/signin",
-  (req, res, next) => {
-    console.log("✅ HIT /api/auth/signin");
-    next();
-  },
-  passport.authenticate("local", { session: false }),
-);
+router.post("/signup", signup);
+
+router.post("/signin", signin);
+
+router.post("/test", authHandler, (req, res) => {
+  res.status(200).json({ message: "All good" });
+});
 
 export default router;

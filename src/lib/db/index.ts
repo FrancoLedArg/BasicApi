@@ -7,6 +7,8 @@ import * as schema from "./schema";
 // Env
 import { config } from "@/config/env";
 
-const pool = new Pool({ connectionString: config.DB_URL });
+const URI = `postgresql://${config.DB_USER}:${config.DB_PASSWORD}@${config.DB_HOST}:${config.DB_PORT}/${config.DB_NAME}`;
+
+const pool = new Pool({ connectionString: URI });
 
 export const db = drizzle(pool, { schema });

@@ -1,13 +1,25 @@
 import dotenv from "dotenv";
+import { z } from "zod";
 
 dotenv.config();
 
-// Check and validate
-// Don't forget
+const envSchema = z.object({
+  NODE_ENV: z.enum(["development", "production"]),
+  API_KEY: z.string(),
+  PORT: z.string(),
+  DB_USER: z.string(),
+  DB_PASSWORD: z.string(),
+  DB_HOST: z.string(),
+  DB_PORT: z.string(),
+  DB_NAME: z.string(),
+  JWT_ACCESS_SECRET: z.string(),
+  JWT_REFRESH_SECRET: z.string(),
+});
 
-export const config = {
-  NODE_ENV: process.env.NODE_ENV,
-  API_KEY: process.env.API_KEY,
-  PORT: process.env.PORT,
-  DB_URL: `postgresql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,
-};
+const parsedEnv = envSchema.parse(process.env);
+
+if (!parsedEnv) {
+  throw new Error("Invalid ENV variables");
+}
+
+export const config = parsedEnv;
