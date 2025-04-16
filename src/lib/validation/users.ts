@@ -1,53 +1,48 @@
 import { z } from "zod";
 
-/*
-export const userFilterSchema = z
-  .object({
-    limit: z
-      .string()
-      .default("0")
-      .refine((val) => !isNaN(Number(val)), { message: "Invalid limit value" })
-      .transform((val) => Number(val))
-      .pipe(z.number().int().nonnegative()),
-    offset: z
-      .string()
-      .default("10")
-      .refine((val) => !isNaN(Number(val)), { message: "Invalid offset value" })
-      .transform((val) => Number(val))
-      .pipe(z.number().int().nonnegative()),
+const emailSchema = z
+  .string()
+  .trim()
+  .email({ message: "Invalid email." })
+  .max(255, { message: "Email must be at most 255 characters." });
+
+const passwordSchema = z
+  .string()
+  .min(8, { message: "Password must be at least 8 characters." })
+  .max(32, { message: "Password must be at most 32 characters." })
+  .regex(/^[a-zA-Z0-9]+$/, {
+    message: "Password can only contain letters and numbers.",
   })
-  .strict();
-*/
+  .refine((val) => /[A-Z]/.test(val), {
+    message: "Password must contain at least one uppercase letter.",
+  })
+  .refine((val) => /[0-9]/.test(val), {
+    message: "Password must contain at least one number.",
+  });
 
-export const userSchema = z.object({
-  id: z.string().uuid("Invalid ID"),
-  email: z.string().email("Invalid email").max(255),
-  password: z
-    .string()
-    .min(8, "Password must be at least 8 characters.")
-    .max(32, "Password must be at most 32 characters.")
-    .regex(/^[a-zA-Z0-9]+$/, "Password can only contain letters and numbers.")
-    .refine((val) => /[A-Z]/.test(val), {
-      message: "Password must contain at least one uppercase letter.",
-    })
-    .refine((val) => /[0-9]/.test(val), {
-      message: "Password must contain at least one number.",
-    }),
-  created_at: z.date().default(() => new Date()),
-  updated_at: z.date().default(() => new Date()),
+export const getUserSchema = z.object({
+  params: z.object({
+    id: z.string().uuid({ message: "Invalid ID format." }),
+  }),
 });
 
-export const getUserSchema = userSchema.pick({ id: true });
-
-export const createUserSchema = userSchema.omit({
-  id: true,
-  created_at: true,
-  updated_at: true,
+export const createUserSchema = z.object({
+  body: z.object({
+    email: emailSchema,
+    password: passwordSchema,
+  }),
 });
 
-export const updateUserSchema = createUserSchema.partial();
+export const updateUserSchema = z.object({
+  params: z.object({
+    id: z.string().uuid({ message: "Invalid ID format." }),
+  }),
+  body: z.object({
+    email: emailSchema.optional(),
+    password: passwordSchema.optional(),
+  }),
+});
 
-export type UserFilterDTO = z.infer<typeof userFilterSchema>;
 export type GetUserDTO = z.infer<typeof getUserSchema>;
 export type CreateUserDTO = z.infer<typeof createUserSchema>;
 export type UpdateUserDTO = z.infer<typeof updateUserSchema>;

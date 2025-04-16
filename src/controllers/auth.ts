@@ -3,6 +3,9 @@ import { Request, Response } from "express";
 // Services
 import { findByEmail, insert } from "@/services/users";
 
+// Types
+import { SignupType, SigninType } from "@/lib/validation/auth";
+
 // Utils
 import {
   createAccessToken,
@@ -16,15 +19,20 @@ import { config } from "@/config/env";
 // Bcrypt
 import bcrypt from "bcrypt";
 
-export const signup = async (req: Request, res: Response) => {
+export const signup = async (
+  req: Request<unknown, unknown, SignupType["body"]>,
+  res: Response,
+) => {
   try {
-    const user = await findByEmail(req.body.email);
+    const { email, password } = req.body;
+
+    const user = await findByEmail(email);
 
     if (user) {
       throw new Error("User already exists.");
     }
 
-    const newUser = await insert(req.body);
+    const newUser = await insert(email, password);
 
     res.status(200).json({
       success: true,
@@ -41,7 +49,10 @@ export const signup = async (req: Request, res: Response) => {
   }
 };
 
-export const signin = async (req: Request, res: Response) => {
+export const signin = async (
+  req: Request<unknown, unknown, SigninType["body"]>,
+  res: Response,
+) => {
   try {
     const { accessToken, refreshToken } = req.cookies;
 
@@ -93,7 +104,7 @@ export const signin = async (req: Request, res: Response) => {
   }
 };
 
-export const logout = async (req: Request, res: Response) => {
+export const signout = async (req: Request, res: Response) => {
   try {
     const { refreshToken } = req.cookies;
 

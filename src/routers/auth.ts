@@ -2,27 +2,20 @@ import { Router } from "express";
 
 // Middlewares
 import { authHandler } from "@/middlewares/authHandler";
-/*
 import { validateSchema } from "@/middlewares/validatieSchema";
 
 // Validation Schemas
-import {
-  getUserSchema,
-  createUserSchema,
-  updateUserSchema,
-  userFilterSchema,
-} from "@/lib/validation/users";
- */
+import { signupSchema, signinSchema } from "@/lib/validation/auth";
 
 // Controllers
-import { signup, signin } from "@/controllers/auth";
+import { signup, signin, signout } from "@/controllers/auth";
 
 const router = Router();
 
-router.post("/signup", signup);
+router.post("/signup", /*authHandler*/ validateSchema(signupSchema), signup);
 
-router.post("/signin", signin);
+router.post("/signin", /*authHandler*/ validateSchema(signinSchema), signin);
 
-router.post("/signout", authHandler);
+router.post("/signout", authHandler, signout);
 
 export default router;
