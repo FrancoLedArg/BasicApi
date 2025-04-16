@@ -22,10 +22,6 @@ export const findAll = async (query: UserFilterDTO) => {
     offset,
   });
 
-  if (!users) {
-    throw new Error("Database Error");
-  }
-
   return users;
 };
 

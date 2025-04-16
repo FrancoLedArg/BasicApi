@@ -43,7 +43,9 @@ export const signup = async (req: Request, res: Response) => {
 
 export const signin = async (req: Request, res: Response) => {
   try {
-    if (req.cookies.accessToken || req.cookies.refreshToken) {
+    const { accessToken, refreshToken } = req.cookies;
+
+    if (accessToken || refreshToken) {
       throw new Error("Already authenticated");
     }
 
@@ -59,20 +61,20 @@ export const signin = async (req: Request, res: Response) => {
       throw new Error("Bad Credentials");
     }
 
-    const accessToken = createAccessToken(user.id);
-    const refreshToken = createRefreshToken(user.id);
+    const newAccessToken = createAccessToken(user.id);
+    const newFefreshToken = createRefreshToken(user.id);
 
     // Set Cookies
-    res.cookie("accessToken", accessToken, {
+    res.cookie("accessToken", newAccessToken, {
       httpOnly: true,
       secure: config.NODE_ENV === "production",
       sameSite: "strict",
       maxAge: 1000 * 60 * 15, // 15 minutes
     });
 
-    res.cookie("refreshToken", refreshToken, {
+    res.cookie("refreshToken", newFefreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: config.NODE_ENV === "production",
       sameSite: "strict",
       maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
     });
@@ -91,35 +93,32 @@ export const signin = async (req: Request, res: Response) => {
   }
 };
 
-export const refresh = async (req: Request, res: Response) => {
+export const logout = async (req: Request, res: Response) => {
   try {
-    const token = req.cookies.refreshToken;
+    const { refreshToken } = req.cookies;
+
+    const token = verifyRefreshToken(refreshToken);
     if (!token) {
-      throw new Error("Unauthorized");
+      throw new Error("Unahtenticated");
     }
 
-    const payload = verifyRefreshToken(token);
-
-    const newAccessToken = createAccessToken(payload.id);
-
-    // Set Cookies
-    res.cookie("accessToken", newAccessToken, {
+    res.clearCookie("refreshToken", {
       httpOnly: true,
       secure: config.NODE_ENV === "production",
       sameSite: "strict",
-      maxAge: 1000 * 60 * 15, // 15 minutes
+      path: "/",
     });
 
     res.status(200).json({
       success: true,
-      message: "Token refreshed",
+      message: "Logged out successfully.",
     });
   } catch (error) {
     if (error instanceof Error) {
-      res.status(404).json({ success: false, message: error.message });
+      res.status(500).json({ message: error.message });
       return;
     }
 
-    res.status(500).json({ success: false, message: "Internal server error" });
+    res.status(500).json({ message: "Internal server error." });
   }
 };

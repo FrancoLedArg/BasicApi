@@ -1,7 +1,12 @@
 import { Request, Response, NextFunction } from "express";
 
 // Utils
-import { verifyAccessToken } from "@/utils/tokens";
+import {
+  createAccessToken,
+  verifyAccessToken,
+  verifyRefreshToken,
+} from "@/utils/tokens";
+import { config } from "@/config/env";
 
 export const authHandler = async (
   req: Request,
@@ -13,13 +18,26 @@ export const authHandler = async (
 
     // If there is no token, user unauthenticated
     if (!accessToken && !refreshToken) {
-      throw new Error("There is no tokens");
+      throw new Error("Unauthenticated");
     }
 
-    const payload = verifyAccessToken(accessToken);
-    console.log(payload);
-    if (!payload) {
-      throw new Error("Needs refreshing");
+    const accessPayload = verifyAccessToken(accessToken);
+
+    if (!accessPayload) {
+      const refreshPayload = verifyRefreshToken(refreshToken);
+
+      if (!refreshPayload) {
+        throw new Error("Unauthenticated");
+      }
+
+      const newAccessToken = createAccessToken(refreshPayload.id);
+
+      res.cookie("accessToken", newAccessToken, {
+        httpOnly: true,
+        sameSite: "strict",
+        secure: config.NODE_ENV === "production",
+        maxAge: 1000 * 60 * 15, // 15 min
+      });
     }
 
     next();

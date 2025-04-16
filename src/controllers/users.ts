@@ -13,6 +13,10 @@ export const getUsers = async (
   try {
     const users = await findAll(req.query);
 
+    if (!users) {
+      throw new Error("Users not found");
+    }
+
     res.status(200).json({
       success: true,
       message: "I'm an endpoint",

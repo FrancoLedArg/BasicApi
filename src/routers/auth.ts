@@ -1,5 +1,4 @@
 import { Router } from "express";
-import passport from "passport";
 
 // Middlewares
 import { authHandler } from "@/middlewares/authHandler";
@@ -24,8 +23,6 @@ router.post("/signup", signup);
 
 router.post("/signin", signin);
 
-router.post("/test", authHandler, (req, res) => {
-  res.status(200).json({ message: "All good" });
-});
+router.post("/signout", authHandler);
 
 export default router;

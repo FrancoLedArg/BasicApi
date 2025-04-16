@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+/*
 export const userFilterSchema = z
   .object({
     limit: z
@@ -16,6 +17,7 @@ export const userFilterSchema = z
       .pipe(z.number().int().nonnegative()),
   })
   .strict();
+*/
 
 export const userSchema = z.object({
   id: z.string().uuid("Invalid ID"),
