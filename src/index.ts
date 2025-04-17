@@ -10,8 +10,8 @@ import { config } from "@/config/env";
 import { checkApiKey } from "@/middlewares/checkApiKey";
 
 // Routes
-import authRouter from "@/routers/auth";
-import usersRouter from "@/routers/users";
+import authRouter from "@/modules/auth/routers";
+import usersRouter from "@/modules/users/routers";
 import productsRouter from "@/routers/products";
 import productCategoriesRouter from "@/routers/productCategories";
 import categoriesRouter from "@/routers/categories";
