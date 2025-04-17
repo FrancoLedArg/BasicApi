@@ -17,8 +17,8 @@ import {
   createCategory,
   updateCategory,
   deleteCategory,
-  addProducts,
-  removeProducts,
+  addProductsToCategory,
+  removeProductsFromCategory,
 } from "@/modules/categories/controllers";
 
 const router = Router();
@@ -29,14 +29,14 @@ router.post("/", validateSchema(createCategorySchema), createCategory);
 router.post(
   "/:id/products",
   validateSchema(getCategorySchema),
-  getCategoryById,
+  addProductsToCategory,
 );
 router.patch("/:id", validateSchema(updateCategorySchema), updateCategory);
 router.delete("/:id", validateSchema(getCategorySchema), deleteCategory);
 router.delete(
   "/:id/products",
   validateSchema(getCategorySchema),
-  deleteCategory,
+  removeProductsFromCategory,
 );
 
 export default router;

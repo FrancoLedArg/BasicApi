@@ -39,7 +39,7 @@ export const updateProductSchema = z.object({
     .partial(),
 });
 
-export const addProductsSchema = z.object({
+export const productsToCategorySchema = z.object({
   params: z.object({
     id: z.string().uuid("Invalid ID"),
   }),
@@ -49,4 +49,4 @@ export const addProductsSchema = z.object({
 export type GetProductDTO = z.infer<typeof getProductSchema>;
 export type CreateProductDTO = z.infer<typeof createProductSchema>;
 export type UpdateProductDTO = z.infer<typeof updateProductSchema>;
-export type AddProductsDTO = z.infer<typeof addProductsSchema>;
+export type ProductsToCategoryDTO = z.infer<typeof productsToCategorySchema>;

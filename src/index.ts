@@ -13,13 +13,14 @@ import { checkApiKey } from "@/middlewares/checkApiKey";
 import authRouter from "@/modules/auth/routers";
 import usersRouter from "@/modules/users/routers";
 import productsRouter from "@/modules/products/routers";
-import productCategoriesRouter from "@/routers/productCategories";
 import categoriesRouter from "@/modules/categories/routers";
+/*
 import cartsRouter from "@/routers/carts";
 import cartProductsRouter from "@/routers/cartProducts";
 import ordersRouter from "@/routers/orders";
 import orderProductsRouter from "@/routers/orderProducts";
 import paymentsRouter from "@/routers/payments";
+*/
 
 const app = express();
 
@@ -54,13 +55,15 @@ app.use(checkApiKey);
 app.use("/api/auth", authRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/products", productsRouter);
-app.use("/api/productCategories", productCategoriesRouter);
 app.use("/api/categories", categoriesRouter);
+
+/*
 app.use("/api/carts", cartsRouter);
 app.use("/api/cartProducts", cartProductsRouter);
 app.use("/api/orders", ordersRouter);
 app.use("/api/orderProducts", orderProductsRouter);
 app.use("/api/payments", paymentsRouter);
+*/
 
 app.listen(config.PORT, () => {
   console.log(`Running on Port ${config.PORT}`);

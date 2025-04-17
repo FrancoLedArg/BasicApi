@@ -1,20 +1,24 @@
 import { Request, Response } from "express";
 
 // Services
-import { insert } from "@/modules/productCategories/services";
+import { insertProducts } from "@/modules/productCategories/services";
 
 // DTOs
-import { AddProductsDTO } from "@/lib/validation/products";
+import { ProductsToCategoryDTO } from "@/lib/validation/products";
 
 export const addProductsToCategory = async (
-  req: Request<AddProductsDTO["params"], unknown, AddProductsDTO["body"]>,
+  req: Request<
+    ProductsToCategoryDTO["params"],
+    unknown,
+    ProductsToCategoryDTO["body"]
+  >,
   res: Response,
 ) => {
   try {
     const { id } = req.params;
     const products = req.body;
 
-    const newProductCategory = await insert(products, id);
+    const newProductCategory = await insertProducts(id, products);
 
     res.status(200).json({
       success: true,
