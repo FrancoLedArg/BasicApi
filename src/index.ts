@@ -14,7 +14,7 @@ import authRouter from "@/modules/auth/routers";
 import usersRouter from "@/modules/users/routers";
 import productsRouter from "@/modules/products/routers";
 import productCategoriesRouter from "@/routers/productCategories";
-import categoriesRouter from "@/routers/categories";
+import categoriesRouter from "@/modules/categories/routers";
 import cartsRouter from "@/routers/carts";
 import cartProductsRouter from "@/routers/cartProducts";
 import ordersRouter from "@/routers/orders";
