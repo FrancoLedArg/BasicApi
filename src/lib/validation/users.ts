@@ -37,10 +37,12 @@ export const updateUserSchema = z.object({
   params: z.object({
     id: z.string().uuid({ message: "Invalid ID format." }),
   }),
-  body: z.object({
-    email: emailSchema.optional(),
-    password: passwordSchema.optional(),
-  }),
+  body: z
+    .object({
+      email: emailSchema,
+      password: passwordSchema,
+    })
+    .partial(),
 });
 
 export type GetUserDTO = z.infer<typeof getUserSchema>;

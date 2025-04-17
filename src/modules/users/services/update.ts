@@ -4,10 +4,10 @@ import { db } from "@/lib/db";
 // Schema
 import { users } from "@/lib/db/schema";
 
-export const update = async (
-  id: string,
-  changes: { email?: string; password?: string },
-) => {
+// DTOs
+import { UpdateUserDTO } from "@/lib/validation/users";
+
+export const update = async (id: string, changes: UpdateUserDTO["body"]) => {
   const [updatedUser] = await db
     .update(users)
     .set({

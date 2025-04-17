@@ -12,7 +12,7 @@ import { checkApiKey } from "@/middlewares/checkApiKey";
 // Routes
 import authRouter from "@/modules/auth/routers";
 import usersRouter from "@/modules/users/routers";
-import productsRouter from "@/routers/products";
+import productsRouter from "@/modules/products/routers";
 import productCategoriesRouter from "@/routers/productCategories";
 import categoriesRouter from "@/routers/categories";
 import cartsRouter from "@/routers/carts";
