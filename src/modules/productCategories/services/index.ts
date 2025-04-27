@@ -1,4 +1,3 @@
-export * from "@/modules/productCategories/services/insertProducts";
-// export * from "@/modules/productCategories/services/insertCategories";
-export * from "@/modules/productCategories/services/removeProducts";
-// export * from "@/modules/productCategories/services/removeCategories";
+export * from "@/modules/productCategories/services/findManyById";
+export * from "@/modules/productCategories/services/insert";
+export * from "@/modules/productCategories/services/remove";

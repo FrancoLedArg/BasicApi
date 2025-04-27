@@ -1,9 +1,10 @@
-import { /*Request*/ Response } from "express";
+import { Request, Response } from "express";
 
 // Services
 import { findAll } from "@/modules/categories/services";
 
-export const getCategories = async (/*req: Request*/ res: Response) => {
+// @ts-ignore
+export const getCategories = async (req: Request, res: Response) => {
   try {
     const categories = await findAll();
 

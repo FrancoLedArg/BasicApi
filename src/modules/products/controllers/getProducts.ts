@@ -1,11 +1,12 @@
-import { /*Request*/ Response } from "express";
+import { Request, Response } from "express";
 
 // Services
-import { findAll } from "@/modules/products/services";
+import { findMany } from "@/modules/products/services";
 
-export const getProducts = async (/*req: Request*/ res: Response) => {
+// @ts-ignore
+export const getProducts = async (req: Request, res: Response) => {
   try {
-    const products = await findAll();
+    const products = await findMany();
 
     if (!products) {
       throw new Error("Products not found");

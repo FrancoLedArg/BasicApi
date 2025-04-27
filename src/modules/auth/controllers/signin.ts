@@ -22,7 +22,7 @@ export const signin = async (
   try {
     const { accessToken, refreshToken } = req.cookies;
 
-    if (accessToken || refreshToken) {
+    if (accessToken && refreshToken) {
       throw new Error("Already authenticated");
     }
 

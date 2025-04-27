@@ -37,6 +37,8 @@ export const updateCategorySchema = z.object({
         .min(1, "Description is required")
         .max(255, "Description too long")
         .regex(/^[a-zA-Z0-9\s.,!?()-]+$/, "Invalid characters in description"),
+      productsToAdd: z.array(z.string().uuid("Invalid ID")),
+      productsToRemove: z.array(z.string().uuid("Invalid ID")),
     })
     .partial(),
 });

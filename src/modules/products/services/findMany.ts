@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
 
-export const findAll = async () => {
+export const findMany = async () => {
   const products = await db.query.products.findMany();
 
   return products;

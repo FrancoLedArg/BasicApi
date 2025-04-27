@@ -1,9 +1,17 @@
-import { /*Request*/ Response } from "express";
+import { Request, Response } from "express";
 
 // Services
 import { findAll } from "@/modules/users/services";
 
-export const getUsers = async (/*req: Request*/ res: Response) => {
+/*
+
+There is an error to compile here with the req if i don't use it in the controller
+i'll left it with the ts-ignore for now, i'll come back to it.
+
+*/
+
+// @ts-ignore
+export const getUsers = async (req: Request, res: Response) => {
   try {
     const users = await findAll();
 

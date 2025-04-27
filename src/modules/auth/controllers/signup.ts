@@ -11,6 +11,12 @@ export const signup = async (
   res: Response,
 ) => {
   try {
+    const { accessToken, refreshToken } = req.cookies;
+
+    if (accessToken && refreshToken) {
+      throw new Error("Already authenticated");
+    }
+
     const { email, password } = req.body;
 
     const user = await findByEmail(email);

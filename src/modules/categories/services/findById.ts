@@ -7,7 +7,19 @@ import { categories } from "@/lib/db/schema";
 export const findById = async (id: string) => {
   const category = await db.query.categories.findFirst({
     where: eq(categories.id, id),
+    with: {
+      products: {
+        with: {
+          product: true,
+        },
+      },
+    },
   });
 
-  return category;
+  if (!category) return null;
+
+  return {
+    ...category,
+    products: category.products.map(({ product }) => product),
+  };
 };

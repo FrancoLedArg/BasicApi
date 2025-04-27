@@ -7,7 +7,7 @@ import cookieParser from "cookie-parser";
 import { config } from "@/config/env";
 
 // Middlewares
-import { checkApiKey } from "@/middlewares/checkApiKey";
+// import { checkApiKey } from "@/middlewares/checkApiKey";
 
 // Routes
 import authRouter from "@/modules/auth/routers";
@@ -49,7 +49,7 @@ app.use(cookieParser());
 app.use(express.json());
 
 // Auth (API_KEY)
-app.use(checkApiKey);
+// app.use(checkApiKey);
 
 // Routers
 app.use("/api/auth", authRouter);
