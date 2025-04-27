@@ -7,54 +7,111 @@ import { categories, productCategories } from "@/lib/db/schema";
 // DTOs
 import { UpdateCategoryDTO } from "@/lib/validation/categories";
 
+// Services
+import { findById } from "@/modules/categories/services";
+import { findManyById } from "@/modules/products/services";
+import { findManyById as findProductCategory } from "@/modules/productCategories/services";
+
 export const update = async (
   id: string,
   changes: UpdateCategoryDTO["body"],
 ) => {
   const updatedCategory = await db.transaction(async (tx) => {
-    const { name, description, productsToAdd, productsToRemove } = changes;
+    const { categoryData, categoryProducts } = changes;
+    const { productsToAdd, productsToRemove } = categoryProducts;
 
-    // Update category fields if needed
-    if (name || description) {
-      await tx
-        .update(categories)
-        .set({
-          ...(name && { name }),
-          ...(description && { description }),
-        })
-        .where(eq(categories.id, id));
+    const existingCategory = await findById(id);
+
+    if (!existingCategory) {
+      throw new Error("Category not found");
     }
 
-    // Add product categories
-    if (productsToAdd && productsToAdd.length > 0) {
-      const newRelations = productsToAdd.map((productId) => ({
-        category_id: id,
-        product_id: productId,
-      }));
+    const [updatedExistingCategory] = await tx
+      .update(categories)
+      .set({ ...categoryData })
+      .where(eq(categories.id, id))
+      .returning();
 
-      await tx.insert(productCategories).values(newRelations);
+    if (!updatedExistingCategory) {
+      throw new Error("Error updating category");
     }
 
-    // Remove product categories
-    if (productsToRemove && productsToRemove.length > 0) {
-      await tx
+    if (productsToAdd.length > 0) {
+      const foundProducts = await findManyById(productsToAdd);
+
+      if (foundProducts.length !== productsToAdd.length) {
+        throw new Error("One or more products do not exist");
+      }
+
+      const relationsArray = foundProducts.map((product) => {
+        return {
+          product_id: product.id,
+          category_id: id,
+        };
+      });
+
+      const existingRelations = await findProductCategory(relationsArray);
+
+      if (existingRelations.length > 0) {
+        throw new Error(
+          "One or more products are already added to the category",
+        );
+      }
+
+      const newRelations = await tx
+        .insert(productCategories)
+        .values(relationsArray)
+        .returning();
+
+      if (!newRelations || newRelations.length !== relationsArray.length) {
+        throw new Error("Error creating new ProductCategories");
+      }
+    }
+
+    if (productsToRemove.length > 0) {
+      const productsFound = await findManyById(productsToRemove);
+
+      if (productsFound.length !== productsToRemove.length) {
+        throw new Error("One or more products do not exist");
+      }
+
+      const relationsArray = productsFound.map((product) => {
+        return {
+          product_id: product.id,
+          category_id: id,
+        };
+      });
+
+      const existingRelations = await findProductCategory(relationsArray);
+
+      if (existingRelations.length !== productsToRemove.length) {
+        throw new Error("One or more products were not added to this category");
+      }
+
+      const deletedRelations = await tx
         .delete(productCategories)
         .where(
           and(
             eq(productCategories.category_id, id),
             inArray(productCategories.product_id, productsToRemove),
           ),
-        );
+        )
+        .returning();
+
+      if (
+        !deletedRelations ||
+        deletedRelations.length !== relationsArray.length
+      ) {
+        throw new Error("Error deleting productCategories.");
+      }
     }
 
-    // 4. Return updated category (after changes)
-    const [category] = await tx
-      .select()
-      .from(categories)
-      .where(eq(categories.id, id));
-
-    return category;
+    return updatedExistingCategory;
   });
+
+  if (!updatedCategory) {
+    throw new Error("Error updating category");
+  }
 
   return updatedCategory;
 };

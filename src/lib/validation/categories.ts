@@ -25,8 +25,8 @@ export const updateCategorySchema = z.object({
   params: z.object({
     id: z.string().uuid("Invalid ID"),
   }),
-  body: z
-    .object({
+  body: z.object({
+    categoryData: z.object({
       name: z
         .string()
         .min(1, "Name is required")
@@ -37,10 +37,12 @@ export const updateCategorySchema = z.object({
         .min(1, "Description is required")
         .max(255, "Description too long")
         .regex(/^[a-zA-Z0-9\s.,!?()-]+$/, "Invalid characters in description"),
+    }),
+    categoryProducts: z.object({
       productsToAdd: z.array(z.string().uuid("Invalid ID")),
       productsToRemove: z.array(z.string().uuid("Invalid ID")),
-    })
-    .partial(),
+    }),
+  }),
 });
 
 export type GetCategoryDTO = z.infer<typeof getCategorySchema>;

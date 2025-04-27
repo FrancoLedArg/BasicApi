@@ -16,7 +16,7 @@ export const findById = async (id: string) => {
     },
   });
 
-  if (!category) return null;
+  if (!category) return undefined;
 
   return {
     ...category,
