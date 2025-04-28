@@ -9,7 +9,7 @@ import { UpdateCategoryDTO } from "@/lib/validation/categories";
 
 // Services
 import { findById } from "@/modules/categories/services";
-import { findManyById } from "@/modules/products/services";
+import { findManyById as findProducts } from "@/modules/products/services";
 import {
   insert as insertProductCategory,
   remove as removeProductCategory,
@@ -40,7 +40,7 @@ export const update = async (
     }
 
     if (productsToAdd.length > 0) {
-      const foundProducts = await findManyById(productsToAdd);
+      const foundProducts = await findProducts(productsToAdd);
 
       if (foundProducts.length !== productsToAdd.length) {
         throw new Error("One or more products do not exist");
@@ -57,7 +57,7 @@ export const update = async (
     }
 
     if (productsToRemove.length > 0) {
-      const productsFound = await findManyById(productsToRemove);
+      const productsFound = await findProducts(productsToRemove);
 
       if (productsFound.length !== productsToRemove.length) {
         throw new Error("One or more products do not exist");

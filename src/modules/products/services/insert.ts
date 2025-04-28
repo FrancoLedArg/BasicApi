@@ -19,5 +19,9 @@ export const insert = async (product: CreateProductDTO["body"]) => {
     })
     .returning();
 
+  if (!newProduct) {
+    throw new Error("Error creating product");
+  }
+
   return newProduct;
 };

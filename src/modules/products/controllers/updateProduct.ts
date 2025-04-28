@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 // Services
-import { findById, update } from "@/modules/products/services";
+import { update } from "@/modules/products/services";
 
 // DTOs
 import { UpdateProductDTO } from "@/lib/validation/products";
@@ -14,13 +14,7 @@ export const updateProduct = async (
     const { id } = req.params;
     const changes = req.body;
 
-    const product = await findById(id);
-
-    if (!product) {
-      throw new Error("Product not found");
-    }
-
-    const updatedProduct = await update(product.id, changes);
+    const updatedProduct = await update(id, changes);
 
     res.status(200).json({
       success: true,

@@ -29,24 +29,22 @@ export const updateProductSchema = z.object({
   params: z.object({
     id: z.string().uuid("Invalid ID"),
   }),
-  body: z
-    .object({
-      name: z.string().trim().min(1).max(255),
-      description: z.string().trim().min(1).max(255),
-      price: priceSchema,
-      stock: z.number().int().nonnegative(),
-    })
-    .partial(),
-});
-
-export const productsToCategorySchema = z.object({
-  params: z.object({
-    id: z.string().uuid("Invalid ID"),
+  body: z.object({
+    productData: z
+      .object({
+        name: z.string().trim().min(1).max(255),
+        description: z.string().trim().min(1).max(255),
+        price: priceSchema,
+        stock: z.number().int().nonnegative(),
+      })
+      .partial(),
+    productCategories: z.object({
+      categoriesToAdd: z.array(z.string().uuid("Invalid ID")),
+      categoriesToRemove: z.array(z.string().uuid("Invalid ID")),
+    }),
   }),
-  body: z.array(z.string().uuid("Invalid ID")),
 });
 
 export type GetProductDTO = z.infer<typeof getProductSchema>;
 export type CreateProductDTO = z.infer<typeof createProductSchema>;
 export type UpdateProductDTO = z.infer<typeof updateProductSchema>;
-export type ProductsToCategoryDTO = z.infer<typeof productsToCategorySchema>;

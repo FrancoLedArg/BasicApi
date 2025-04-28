@@ -12,12 +12,9 @@ export const updateCategory = async (
 ) => {
   try {
     const { id } = req.params;
-    const { categoryData, categoryProducts } = req.body;
+    const changes = req.body;
 
-    const updatedCategory = await update(id, {
-      categoryData,
-      categoryProducts,
-    });
+    const updatedCategory = await update(id, changes);
 
     res.status(200).json({
       success: true,

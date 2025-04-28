@@ -4,7 +4,7 @@ import { Request, Response } from "express";
 import { CreateProductDTO } from "@/lib/validation/products";
 
 // Services
-import { findByName, insert } from "@/modules/products/services";
+import { insert } from "@/modules/products/services";
 
 export const createProduct = async (
   req: Request<unknown, unknown, CreateProductDTO["body"]>,
@@ -13,15 +13,7 @@ export const createProduct = async (
   try {
     const product = req.body;
 
-    const existingProduct = await findByName(product.name);
-    if (existingProduct) {
-      throw new Error("Product already exists.");
-    }
-
     const newProduct = await insert(product);
-    if (!newProduct) {
-      throw new Error("Couldn't create the product.");
-    }
 
     res.status(200).json({
       success: true,

@@ -33,7 +33,7 @@ export const userRelations = relations(users, ({ one, many }) => ({
 // Products
 export const products = pgTable("products", {
   id: uuid("id").primaryKey().defaultRandom(),
-  name: varchar("name", { length: 255 }).notNull().unique(),
+  name: varchar("name", { length: 255 }).notNull(),
   description: varchar("description", { length: 255 }).notNull(),
   price: numeric("price", { precision: 10, scale: 2 }).notNull(),
   stock: integer("stock").default(0).notNull(),
