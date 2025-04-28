@@ -26,18 +26,23 @@ export const updateCategorySchema = z.object({
     id: z.string().uuid("Invalid ID"),
   }),
   body: z.object({
-    categoryData: z.object({
-      name: z
-        .string()
-        .min(1, "Name is required")
-        .max(255, "Name too long")
-        .regex(/^[a-zA-Z0-9\s\-]+$/, "Invalid characters in name"),
-      description: z
-        .string()
-        .min(1, "Description is required")
-        .max(255, "Description too long")
-        .regex(/^[a-zA-Z0-9\s.,!?()-]+$/, "Invalid characters in description"),
-    }),
+    categoryData: z
+      .object({
+        name: z
+          .string()
+          .min(1, "Name is required")
+          .max(255, "Name too long")
+          .regex(/^[a-zA-Z0-9\s\-]+$/, "Invalid characters in name"),
+        description: z
+          .string()
+          .min(1, "Description is required")
+          .max(255, "Description too long")
+          .regex(
+            /^[a-zA-Z0-9\s.,!?()-]+$/,
+            "Invalid characters in description",
+          ),
+      })
+      .partial(),
     categoryProducts: z.object({
       productsToAdd: z.array(z.string().uuid("Invalid ID")),
       productsToRemove: z.array(z.string().uuid("Invalid ID")),

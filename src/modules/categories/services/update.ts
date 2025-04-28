@@ -1,8 +1,8 @@
-import { eq, and, inArray } from "drizzle-orm";
 import { db } from "@/lib/db";
+import { eq } from "drizzle-orm";
 
 // Schema
-import { categories, productCategories } from "@/lib/db/schema";
+import { categories } from "@/lib/db/schema";
 
 // DTOs
 import { UpdateCategoryDTO } from "@/lib/validation/categories";
@@ -10,7 +10,10 @@ import { UpdateCategoryDTO } from "@/lib/validation/categories";
 // Services
 import { findById } from "@/modules/categories/services";
 import { findManyById } from "@/modules/products/services";
-import { findManyById as findProductCategory } from "@/modules/productCategories/services";
+import {
+  insert as insertProductCategory,
+  remove as removeProductCategory,
+} from "@/modules/productCategories/services";
 
 export const update = async (
   id: string,
@@ -50,22 +53,7 @@ export const update = async (
         };
       });
 
-      const existingRelations = await findProductCategory(relationsArray);
-
-      if (existingRelations.length > 0) {
-        throw new Error(
-          "One or more products are already added to the category",
-        );
-      }
-
-      const newRelations = await tx
-        .insert(productCategories)
-        .values(relationsArray)
-        .returning();
-
-      if (!newRelations || newRelations.length !== relationsArray.length) {
-        throw new Error("Error creating new ProductCategories");
-      }
+      await insertProductCategory(relationsArray);
     }
 
     if (productsToRemove.length > 0) {
@@ -82,28 +70,7 @@ export const update = async (
         };
       });
 
-      const existingRelations = await findProductCategory(relationsArray);
-
-      if (existingRelations.length !== productsToRemove.length) {
-        throw new Error("One or more products were not added to this category");
-      }
-
-      const deletedRelations = await tx
-        .delete(productCategories)
-        .where(
-          and(
-            eq(productCategories.category_id, id),
-            inArray(productCategories.product_id, productsToRemove),
-          ),
-        )
-        .returning();
-
-      if (
-        !deletedRelations ||
-        deletedRelations.length !== relationsArray.length
-      ) {
-        throw new Error("Error deleting productCategories.");
-      }
+      await removeProductCategory(relationsArray);
     }
 
     return updatedExistingCategory;

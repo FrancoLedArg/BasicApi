@@ -1,16 +1,14 @@
 import { db } from "@/lib/db";
-import { productCategories } from "@/lib/db/schema";
-import { and, eq, or } from "drizzle-orm";
+import { or } from "drizzle-orm";
 
-export const findManyById = async (
-  productCategoriesArray: { product_id: string; category_id: string }[],
-) => {
-  const conditions = productCategoriesArray.map((item) =>
-    and(
-      eq(productCategories.product_id, item.product_id),
-      eq(productCategories.category_id, item.category_id),
-    ),
-  );
+// Types
+import { ProductCategory } from "@/modules/productCategories/types/ProductCategory";
+
+// Utils
+import { generateConditions } from "@/modules/productCategories/utils/generateConditions";
+
+export const findManyById = async (relations: ProductCategory[]) => {
+  const conditions = generateConditions(relations);
 
   const productCategory = await db.query.productCategories.findMany({
     where: or(...conditions),
