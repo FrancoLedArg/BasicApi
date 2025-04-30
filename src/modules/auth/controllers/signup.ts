@@ -1,13 +1,13 @@
 import { Request, Response } from "express";
 
 // Services
-import { findByEmail, insert } from "@/modules/users/services";
+import { insert } from "@/modules/users/services";
 
 // Types
-import { SignupType } from "@/lib/validation/auth";
+import { SignupDTO } from "@/lib/validation/auth";
 
 export const signup = async (
-  req: Request<unknown, unknown, SignupType["body"]>,
+  req: Request<unknown, unknown, SignupDTO["body"]>,
   res: Response,
 ) => {
   try {
@@ -18,12 +18,6 @@ export const signup = async (
     }
 
     const { email, password } = req.body;
-
-    const user = await findByEmail(email);
-
-    if (user) {
-      throw new Error("User already exists.");
-    }
 
     const newUser = await insert(email, password);
 

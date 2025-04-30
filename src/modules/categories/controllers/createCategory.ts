@@ -11,9 +11,9 @@ export const createCategory = async (
   res: Response,
 ) => {
   try {
-    const { name, description } = req.body;
+    const category = req.body;
 
-    const newCategory = await insert({ name, description });
+    const newCategory = await insert(category);
 
     res.status(200).json({
       success: true,

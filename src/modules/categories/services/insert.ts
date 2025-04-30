@@ -17,5 +17,9 @@ export const insert = async (category: CreateCategoryDTO["body"]) => {
     })
     .returning();
 
+  if (!newCategory) {
+    throw new Error("Error creating category");
+  }
+
   return newCategory;
 };

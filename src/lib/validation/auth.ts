@@ -36,5 +36,5 @@ export const signinSchema = z.object({
   }),
 });
 
-export type SignupType = z.infer<typeof signupSchema>;
+export type SignupDTO = z.infer<typeof signupSchema>;
 export type SigninType = z.infer<typeof signinSchema>;
