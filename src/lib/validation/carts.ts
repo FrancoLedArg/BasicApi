@@ -1,18 +1,25 @@
 import { z } from "zod";
 
-export const cartSchema = z.object({
-  id: z.string().uuid("Invalid ID"),
-  user_id: z.string().uuid("Invalid ID"),
-  created_at: z.string().datetime(),
-  updated_at: z.string().datetime(),
+export const addProductSchema = z.object({
+  body: z.object({
+    product_id: z.string().uuid("Invalid ID"),
+    quantity: z.number().nonnegative("Must be positive"),
+  }),
 });
 
-export const getCartSchema = cartSchema.pick({ id: true });
+export const updateQuantitySchema = z.object({
+  body: z.object({
+    product_id: z.string().uuid("Invalid ID"),
+    quantity: z.number().nonnegative("Must be positive"),
+  }),
+});
 
-export const createCartSchema = cartSchema.pick({ user_id: true });
+export const deleteProductSchema = z.object({
+  body: z.object({
+    product_id: z.string().uuid("Invalid ID"),
+  }),
+});
 
-export const updateCartSchema = createCartSchema.partial();
-
-export type GetCartDTO = z.infer<typeof getCartSchema>;
-export type CreateCartDTO = z.infer<typeof createCartSchema>;
-export type UpdateCartDTO = z.infer<typeof updateCartSchema>;
+export type AddProductDTO = z.infer<typeof addProductSchema>;
+export type UpdateQuantityDTO = z.infer<typeof updateQuantitySchema>;
+export type RemoveProductDTO = z.infer<typeof deleteProductSchema>;

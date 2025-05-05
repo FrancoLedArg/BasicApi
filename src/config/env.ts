@@ -8,8 +8,7 @@ const envSchema = z.object({
   API_KEY: z.string(),
   PORT: z.string(),
   DB_URI: z.string(),
-  JWT_ACCESS_SECRET: z.string(),
-  JWT_REFRESH_SECRET: z.string(),
+  SESSION_SECRET: z.string(),
 });
 
 const parsedEnv = envSchema.parse(process.env);

@@ -1,12 +1,17 @@
 import { Request, Response, NextFunction } from "express";
 
+// Env
+import { config } from "@/config/env";
+
+// Services
+import { findByEmail } from "@/modules/users/services";
+
 // Utils
 import {
   createAccessToken,
   verifyAccessToken,
   verifyRefreshToken,
 } from "@/utils/tokens";
-import { config } from "@/config/env";
 
 export const authHandler = async (
   req: Request,

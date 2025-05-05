@@ -1,10 +1,11 @@
 import "module-alias/register";
 import express from "express";
 import cors from "cors";
-import cookieParser from "cookie-parser";
+// import cookieParser from "cookie-parser";
+import { config } from "@/config/env";
+import { sessionConfig } from "@/config/session";
 
 // Env
-import { config } from "@/config/env";
 
 // Middlewares
 // import { checkApiKey } from "@/middlewares/checkApiKey";
