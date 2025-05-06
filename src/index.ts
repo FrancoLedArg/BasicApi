@@ -1,9 +1,12 @@
 import "module-alias/register";
 import express from "express";
 import cors from "cors";
-// import cookieParser from "cookie-parser";
 import { config } from "@/config/env";
 import { sessionConfig } from "@/config/session";
+
+// Passport
+import passport from "passport";
+import "@/lib/strategies/localStrategy";
 
 // Env
 
@@ -46,10 +49,12 @@ app.use(
 */
 
 app.use(cors());
-app.use(cookieParser());
 app.use(express.json());
 
-// Auth (API_KEY)
+// Auth
+app.use(sessionConfig);
+app.use(passport.initialize());
+app.use(passport.session());
 // app.use(checkApiKey);
 
 // Routers

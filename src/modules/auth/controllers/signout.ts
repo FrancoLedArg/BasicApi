@@ -1,30 +1,25 @@
 import { Request, Response } from "express";
 
-// Utils
-import { verifyRefreshToken } from "@/utils/tokens";
-
-// Env
-import { config } from "@/config/env";
-
+// @ts-ignore
 export const signout = async (req: Request, res: Response) => {
   try {
-    const { refreshToken } = req.cookies;
+    const session = req.user;
 
-    const token = verifyRefreshToken(refreshToken);
-    if (!token) {
-      throw new Error("Unahtenticated");
+    if (!session) {
+      throw new Error("Unauthorized");
     }
 
-    res.clearCookie("refreshToken", {
-      httpOnly: true,
-      secure: config.NODE_ENV === "production",
-      sameSite: "strict",
-      path: "/",
-    });
+    req.logout((err) => {
+      if (err) {
+        throw new Error("Error signing out.");
+      }
 
-    res.status(200).json({
-      success: true,
-      message: "Logged out successfully.",
+      res.clearCookie("connect.sid");
+
+      res.status(200).json({
+        success: true,
+        message: "Logged out successfully.",
+      });
     });
   } catch (error) {
     if (error instanceof Error) {

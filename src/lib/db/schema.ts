@@ -1,8 +1,10 @@
 // Drizzle
 import {
+  json,
   pgEnum,
   pgTable,
   varchar,
+  text,
   integer,
   numeric,
   decimal,
@@ -11,6 +13,13 @@ import {
   primaryKey,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
+
+// Sessions
+export const sessions = pgTable("sessions", {
+  sid: text("sid").primaryKey(),
+  sess: json("sess").notNull(),
+  expire: timestamp("expire", { precision: 6 }).notNull(),
+});
 
 // Users
 export const users = pgTable("users", {

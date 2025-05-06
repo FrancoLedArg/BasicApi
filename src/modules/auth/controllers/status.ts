@@ -1,11 +1,18 @@
 import { Request, Response } from "express";
 
 // @ts-ignore
-export const signin = async (req: Request, res: Response) => {
+export const status = async (req: Request, res: Response) => {
   try {
+    const session = req.user;
+
+    if (!session) {
+      throw new Error("Unauthenticated");
+    }
+
     res.status(200).json({
       success: true,
-      message: "Successfully signed in.",
+      message: "Status.",
+      user: session,
     });
   } catch (error) {
     if (error instanceof Error) {

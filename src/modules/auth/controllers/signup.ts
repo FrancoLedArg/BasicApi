@@ -11,13 +11,12 @@ export const signup = async (
   res: Response,
 ) => {
   try {
-    const { accessToken, refreshToken } = req.cookies;
+    const session = req.user;
+    const { email, password } = req.body;
 
-    if (accessToken && refreshToken) {
+    if (session) {
       throw new Error("Already authenticated");
     }
-
-    const { email, password } = req.body;
 
     const newUser = await insert(email, password);
 
