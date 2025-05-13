@@ -13,7 +13,7 @@ export const sessionConfig = session({
   }),
   secret: config.SESSION_SECRET,
   resave: false,
-  saveUninitialized: false,
+  saveUninitialized: true,
   cookie: {
     httpOnly: true,
     secure: config.NODE_ENV === "production",

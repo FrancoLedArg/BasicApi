@@ -4,11 +4,7 @@ import { eq, and } from "drizzle-orm";
 // Schemas
 import { products, carts, cartProducts } from "@/lib/db/schema";
 
-export const insertRelation = async (
-  cartId: string,
-  productId: string,
-  quantity: number,
-) => {
+export const removeRelation = async (cartId: string, productId: string) => {
   const relation = await db.transaction(async (tx) => {
     const [existingCart, existingProduct] = await Promise.all([
       tx.query.carts.findFirst({ where: eq(carts.id, cartId) }),
@@ -25,21 +21,26 @@ export const insertRelation = async (
       ),
     });
 
-    if (existingRelation) throw new Error("Product already added to the cart");
+    if (!existingRelation) throw new Error("Relation not found");
 
-    const [newRelation] = await tx
-      .insert(cartProducts)
-      .values({ product_id: productId, cart_id: cartId, quantity })
+    const [removedRelation] = await tx
+      .delete(cartProducts)
+      .where(
+        and(
+          eq(cartProducts.product_id, productId),
+          eq(cartProducts.cart_id, cartId),
+        ),
+      )
       .returning();
 
-    if (!newRelation) {
-      throw new Error("Couldn't add product to cart");
+    if (!removedRelation) {
+      throw new Error("Couldn't remove product from the cart");
     }
 
-    return newRelation;
+    return removedRelation;
   });
 
-  if (!relation) throw new Error("Couldn't add product to cart");
+  if (!relation) throw new Error("Couldn't remove product from the cart");
 
   return relation;
 };

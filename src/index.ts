@@ -12,14 +12,15 @@ import "@/lib/strategies/localStrategy";
 
 // Middlewares
 // import { checkApiKey } from "@/middlewares/checkApiKey";
+import { errorHandler } from "@/middlewares/errorHandler";
 
 // Routes
 import authRouter from "@/modules/auth/routers";
 import usersRouter from "@/modules/users/routers";
 import productsRouter from "@/modules/products/routers";
 import categoriesRouter from "@/modules/categories/routers";
+import cartsRouter from "@/modules/carts/routers";
 /*
-import cartsRouter from "@/routers/carts";
 import cartProductsRouter from "@/routers/cartProducts";
 import ordersRouter from "@/routers/orders";
 import orderProductsRouter from "@/routers/orderProducts";
@@ -62,6 +63,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/products", productsRouter);
 app.use("/api/categories", categoriesRouter);
+app.use("/api/carts", cartsRouter);
 
 /*
 app.use("/api/carts", cartsRouter);
@@ -70,6 +72,8 @@ app.use("/api/orders", ordersRouter);
 app.use("/api/orderProducts", orderProductsRouter);
 app.use("/api/payments", paymentsRouter);
 */
+
+app.use(errorHandler);
 
 app.listen(config.PORT, () => {
   console.log(`Running on Port ${config.PORT}`);

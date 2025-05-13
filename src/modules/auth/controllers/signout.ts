@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 
-// @ts-ignore
 export const signout = async (req: Request, res: Response) => {
   try {
     const session = req.user;
@@ -9,12 +8,17 @@ export const signout = async (req: Request, res: Response) => {
       throw new Error("Unauthorized");
     }
 
-    req.logout((err) => {
+    req.session.destroy((err) => {
       if (err) {
         throw new Error("Error signing out.");
       }
 
-      res.clearCookie("connect.sid");
+      res.clearCookie("connect.sid", {
+        path: "/",
+        httpOnly: true,
+        sameSite: "lax",
+        secure: false,
+      });
 
       res.status(200).json({
         success: true,

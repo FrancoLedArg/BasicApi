@@ -23,9 +23,10 @@ export const createProduct = async (
   } catch (error) {
     if (error instanceof Error) {
       res.status(404).json({ success: false, message: error.message });
-      return;
+    } else {
+      res
+        .status(500)
+        .json({ success: false, message: "Internal server error" });
     }
-
-    res.status(500).json({ success: false, message: "Internal server error" });
   }
 };

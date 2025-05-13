@@ -8,18 +8,20 @@ export const addProductSchema = z.object({
 });
 
 export const updateQuantitySchema = z.object({
-  body: z.object({
+  params: z.object({
     product_id: z.string().uuid("Invalid ID"),
+  }),
+  body: z.object({
     quantity: z.number().nonnegative("Must be positive"),
   }),
 });
 
-export const deleteProductSchema = z.object({
-  body: z.object({
+export const removeProductSchema = z.object({
+  params: z.object({
     product_id: z.string().uuid("Invalid ID"),
   }),
 });
 
 export type AddProductDTO = z.infer<typeof addProductSchema>;
 export type UpdateQuantityDTO = z.infer<typeof updateQuantitySchema>;
-export type RemoveProductDTO = z.infer<typeof deleteProductSchema>;
+export type RemoveProductDTO = z.infer<typeof removeProductSchema>;

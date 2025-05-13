@@ -4,7 +4,7 @@ import { eq, and } from "drizzle-orm";
 // Schemas
 import { products, carts, cartProducts } from "@/lib/db/schema";
 
-export const insertRelation = async (
+export const updateRelation = async (
   cartId: string,
   productId: string,
   quantity: number,
@@ -25,21 +25,27 @@ export const insertRelation = async (
       ),
     });
 
-    if (existingRelation) throw new Error("Product already added to the cart");
+    if (!existingRelation) throw new Error("Product was not added to the cart");
 
-    const [newRelation] = await tx
-      .insert(cartProducts)
-      .values({ product_id: productId, cart_id: cartId, quantity })
+    const [updatedRelation] = await tx
+      .update(cartProducts)
+      .set({ quantity })
+      .where(
+        and(
+          eq(cartProducts.product_id, existingRelation.product_id),
+          eq(cartProducts.cart_id, existingRelation.cart_id),
+        ),
+      )
       .returning();
 
-    if (!newRelation) {
-      throw new Error("Couldn't add product to cart");
+    if (!updatedRelation) {
+      throw new Error("Couldn't update quantity");
     }
 
-    return newRelation;
+    return updatedRelation;
   });
 
-  if (!relation) throw new Error("Couldn't add product to cart");
+  if (!relation) throw new Error("Issue updating relation");
 
   return relation;
 };

@@ -1,17 +1,35 @@
 import { Request, Response } from "express";
 
+// DTOs
+import { AddProductDTO } from "@/lib/validation/carts";
+
 // Services
-// import { insertProduct } from "@/modules/carts/services";
+import { insertRelation } from "@/modules/carts/services";
 
 // @ts-ignore
-export const addProduct = async (req: Request, res: Response) => {
+export const addProduct = async (
+  req: Request<unknown, unknown, AddProductDTO["body"]>,
+  res: Response,
+) => {
   try {
-    const carts = { name: true };
+    const session = req.user;
+
+    if (!session) {
+      throw new Error("Unauthorized");
+    }
+
+    const { product_id, quantity } = req.body;
+
+    const addedProduct = await insertRelation(
+      session.cart.id,
+      product_id,
+      quantity,
+    );
 
     res.status(200).json({
       success: true,
-      message: "I'm an endpoint",
-      data: carts,
+      message: "Product added successfully.",
+      data: addedProduct,
     });
   } catch (error: unknown) {
     if (error instanceof Error) {

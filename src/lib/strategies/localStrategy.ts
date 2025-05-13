@@ -18,7 +18,11 @@ passport.deserializeUser(async (id: string, done) => {
     const user = await db.query.users.findFirst({
       where: eq(users.id, id),
       with: {
-        cart: true,
+        cart: {
+          with: {
+            products: true,
+          },
+        },
       },
     });
 
