@@ -1,55 +1,28 @@
--- More details about the project
+# Basic E-Commerce API
 
-## Porpuse of the API
+This project aims to showcase my backend skills and knowledge.
 
-This API provides a robust foundation for building and managing an e-commerce platform. It serves two main user groups:
+A REST API for a hypothetical e-commerce platform, built with Node.js, Express, TypeScript and PostgreSQL.
 
-1. Customers (End Users)
+It handles user management, authentication, and basic e-commerce functionality, such as product management, order processing, and it's designed with best practices and clean architecture in mind.
 
-Customers interact with the API to browse products, manage their shopping carts, and complete purchases. Their main goals include:
+## Table of Contents
 
-- Browsing & Searching Products: Find products using categories, filters and search queries.
-- Adding to Cart & Wishlist: Save items for later or add them to the shopping cart.
-- Checkout & Payments: Securely place orders and complete payments.
-- Order Tracking & History: View past orders, track shipments, and request returns.
-- User Authentication & Profiles: Create accounts, manage profiles, and save payment/shipping details.
+1. [Installation](#-project-overview)
+2. [Tech Stack](#-tech-stack)
+3. [Project Structure](#-project-structure)
+4. [Installation](#-installation)
+5. [Environment Setup](#-environment-setup)
+6. [Running the Project](#-run-the-project)
+7. [API Overview](#-api-overview)
+8. [Authentication](#-authentication)
+9. [Future Improvements](#-future-improvements)
+10. [Author](#-author)
 
-2. Store Owners & Managers (Admins)
+---
 
-Admins use the API to manage products, orders, and users. Their primary objectives are:
+## Installation
 
-- Product Management: Add, update, or remove products and categories.
-- Order Processing: View, update, or cancel orders.
-- User & Role Management: Manage customer accounts, assign roles (admin, customer support, etc.).
-- Analytics & Reports: Generate reports on sales, revenue, and customer behavior.
-- Inventory Management: Track stock levels and prevent overselling.
+1. Prerequisites
 
--- More details about the project
-
-import dotenv from "dotenv";
-import { z } from "zod";
-
-dotenv.config();
-
-const envSchema = z.object({
-NODE_ENV: z.enum(["development", "production"]),
-API_KEY: z.string(),
-PORT: z.string(),
-DB_USER: z.string(),
-DB_PASSWORD: z.string(),
-DB_HOST: z.string(),
-DB_PORT: z.string(),
-DB_NAME: z.string(),
-JWT_ACCESS_SECRET: z.string(),
-JWT_REFRESH_SECRET: z.string(),
-});
-
-const parsedEnv = envSchema.parse(process.env);
-
-if (!parsedEnv) {
-throw new Error("Invalid ENV variables");
-}
-
-export const config = parsedEnv;
-
-`postgresql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,
+This project runs on Node.js, and uses
